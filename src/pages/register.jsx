@@ -1,11 +1,13 @@
 import { A } from '@solidjs/router'
 import whiteLogo from "../assets/white.png"
+import eyeOpen from "../assets/eyeOpen.png"
+import eyeHidden from "../assets/eyeHidden.png"
 import { createEffect, createSignal } from 'solid-js'
 
 
 function Register(){
     const [isVisible, setIsVisible] = createSignal(false);
-    const toggleVisibility = ()=> setIsVisible(!isVisible);
+    const toggleVisibility = ()=> setIsVisible(!isVisible());
 
     return (
         <>
@@ -25,7 +27,7 @@ function Register(){
                     {'< '}Back to home
                     </A>
                     <div class="mt-2 p-10 shadow-lg shadow slate-200">
-                        <h1 class='pb-10 text-center text-4xl font-semibold'>Login</h1>
+                        <h1 class='pb-10 text-center text-4xl font-semibold'>Register</h1>
                         <form class="flex flex-col gap-y-5" onSubmit={''}>
                             <label class="mb-1 text-gray-700 font-medium"> Username</label>
                             <input 
@@ -33,7 +35,7 @@ function Register(){
                             value=""
                             onChange={''}
                             class='px-4 py-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base'
-                            
+                            placeholder='Enter username'
                             />
                             <label class="mb-1 text-gray-700 font-medium"> Email</label>
                             <input 
@@ -41,14 +43,15 @@ function Register(){
                             value=""
                             onChange={''}
                             class='px-4 py-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base'
+                            placeholder='Enter email'
                             />
                             <label class="mb-1 text-gray-700 font-medium"> Password</label>
                             <div class="relative w-full max-w-md">
                                 <input 
                                 type={isVisible() ? "text" : "password"}
                                 value=""
-                                class='px-4 py-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base w-100'
-
+                                class='px-4 py-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base w-full'
+                                placeholder='Enter password'
                                 />
                                 
                                 <button
@@ -56,16 +59,18 @@ function Register(){
                                 aria-label='Toggle password visibility'
                                 class='absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-600'
                                 onClick={toggleVisibility}
-                                >Toggle</button>
+                                >
+                                    <img src={isVisible() ? eyeOpen : eyeHidden} width={24} height={24} class='mr-2' />
+                                </button>
                             </div>
 
-                            <button class="mt-5 bg-sky-400 font-medium text-white rounded-md" type='submit'>Login</button>
+                            <button class="mt-5 bg-sky-400 font-medium text-white rounded-md py-2 cursor-pointer hover:bg-sky-300" type='submit'>Register</button>
                             <h3 class='text-center'>
-                                Don't have an account?
+                                Already have an account ?
                                 <A
-                                href={'/register'}
+                                href={'/login'}
                                 class='font-medium text-sky-400 hover:text-sky-300'
-                                > Register</A>
+                                > Go back </A>
 
                             </h3>
                         </form>

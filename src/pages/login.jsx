@@ -1,8 +1,13 @@
 import { createEffect, createSignal } from "solid-js";
 import { A } from "@solidjs/router";
+import eyeOpen from "../assets/eyeOpen.png"
+import eyeHidden from "../assets/eyeHidden.png"
 import whiteLogo from "../assets/white.png";
 
 function Login() {
+  const [isVisible, setIsVisible] = createSignal(false);
+  const toggleVisibility = ()=> setIsVisible(!isVisible());
+
   return (
     <>
       <div class="flex">
@@ -26,13 +31,23 @@ function Login() {
                   placeholder="Enter your email"
                 />
                 <label class="mb-1 text-gray-700 font-medium"> Password</label>
-                <input
-                  type="password" //isVisible nya ntar ya
-                  value=""
-                  onChange={""}
-                  class="px-4 py-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                  placeholder="Enter your password"
-                />
+                <div class="relative w-full max-w-md">
+                    <input 
+                    type={isVisible() ? "text" : "password"}
+                    value=""
+                    class='px-4 py-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base w-full'
+                    placeholder="Enter your password"
+                    />
+                    
+                    <button
+                    type="button"
+                    aria-label='Toggle password visibility'
+                    class='absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-600'
+                    onClick={toggleVisibility}
+                    >
+                        <img src={isVisible() ? eyeOpen : eyeHidden} width={24} height={24} class='mr-2' />
+                    </button>
+                </div>
                 <button
                   class="mt-5 bg-sky-400 font-medium text-white rounded-md py-2 cursor-pointer hover:bg-sky-300"
                   type="submit"

@@ -5,9 +5,9 @@ import Login from "./routes/login";
 function App() {
   return (
     <>
-    <h1>A</h1>
+   
       <Router>
-          <Route path="/" component={Login} />
+          <Route path="/login" component={Login} />
       </Router>
     
     </>

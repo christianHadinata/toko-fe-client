@@ -1,6 +1,6 @@
 export default function SearchBar() {
   return (
-    <div class="flex w-[1200px] rounded-xl border-2 border-gray-300 px-5 py-2 mt-14">
+    <div class="flex w-full rounded-xl border-2 border-gray-300 px-5 py-2">
       <img
         src={"/assets/icon/search-1.png"}
         width={20}
@@ -10,8 +10,8 @@ export default function SearchBar() {
       ></img>
       <input
         type="text"
-        placeholder="Cari di Tokosiceha"
-        class="w-full px-5 text-sm placeholder-gray-600 outline-none"
+        placeholder="Cari di Tokofe"
+        class="w-full px-5 placeholder-gray-600 outline-none"
       />
     </div>
   );

@@ -243,31 +243,31 @@ export default function Home() {
   //   fetchProducts();
   // }, []);
   return (
-    <div class="mt-2 flex flex-col items-center">
+    <>
       {/* Carousel */}
-      <div class="group relative mx-auto w-full max-w-[1200px]">
+      <div class="group relative mx-auto w-full mb-8">
         <img
           src={`/assets/Image/dummyCarousel.jpg`}
           alt=""
-          class="h-[300px] w-full rounded-xl"
+          class="w-full rounded-xl"
         />
       </div>
       {/* Search Bar */}
       <SearchBar />
       {/* Categories */}
-      <div class="flex w-full max-w-[1200px] flex-col py-14">
+      <div class="flex w-full flex-col mt-8">
         <h2 class="text-3xl font-semibold capitalize">
           Shop our top categories
         </h2>
-        <div class="mt-5 flex flex-wrap gap-4">
+        <div class="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <For each={categories}>
             {(category) => <CategoryCard {...category} />}
           </For>
         </div>
       </div>
-      <div class="flex w-full max-w-[1200px] flex-col py-7">
+      <div class="flex w-full flex-col py-7">
         <h2 class="text-3xl font-semibold capitalize">Featured Products</h2>
-        <div class="mt-5 flex flex-wrap gap-4">
+        <div class="mt-5 product-container">
           <For each={products}>
             {(product) => (
               <ProductCard
@@ -278,6 +278,6 @@ export default function Home() {
           </For>
         </div>
       </div>
-    </div>
+    </>
   );
 }

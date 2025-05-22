@@ -3,7 +3,7 @@ import { A } from "@solidjs/router";
 export default function page404() {
   return (
     <>
-      <div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
+      <div class="flex items-center justify-center min-h-screen">
         <div class="text-center animate-fadeIn">
           <img
             src={"/assets/Image/404.png"}

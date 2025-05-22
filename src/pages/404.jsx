@@ -1,4 +1,3 @@
-import bg404 from "../assets/Image/404.png";
 import { A } from "@solidjs/router";
 
 export default function page404() {
@@ -7,7 +6,7 @@ export default function page404() {
       <div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
         <div class="text-center animate-fadeIn">
           <img
-            src={bg404}
+            src={"/assets/Image/404.png"}
             alt="404 background"
             class="mx-auto w-160 animate-[float_3s_infinite]  rounded-lg"
           />

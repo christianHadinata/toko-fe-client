@@ -1,14 +1,14 @@
 import { A } from "@solidjs/router";
-import dummyCategoryImages from "../assets/Image/fashion-1.jpg";
 export default function CategoryCard(props) {
   return (
     <A
-      href={`/category/${props.category_id}`}
+      href={`/category/${props.category_name}`}
       class="relative h-[250px] w-[186px] cursor-pointer overflow-hidden rounded-xl"
     >
       <div class="absolute inset-0 z-10 overflow-hidden">
+        {console.log(props)}
         <img
-          src={dummyCategoryImages}
+          src={`/assets/Image/dummyCategory${props.category_name}.jpg`}
           alt="tech"
           class="h-full w-full rounded-xl object-cover transition-all hover:scale-110"
         />
@@ -19,7 +19,7 @@ export default function CategoryCard(props) {
       </h3>
     </A>
     //   <A
-    //   href={`/category/${props.category_id}`}
+    //   href={`/category/${props.category_name}`}
     //   class="relative h-[250px] w-[186px] cursor-pointer overflow-hidden rounded-xl"
     // >
     //   <div class="absolute inset-0 z-10 overflow-hidden">

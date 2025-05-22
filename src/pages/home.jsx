@@ -1,5 +1,4 @@
 import { createSignal, For } from "solid-js";
-import dummyCarousel from "../assets/Image/dummyCarousel.jpg";
 import CategoryCard from "../components/CategoryCard";
 import ProductCard from "../components/ProductCard";
 import SearchBar from "../components/SearchBar";
@@ -247,7 +246,11 @@ export default function Home() {
     <div class="mt-2 flex flex-col items-center">
       {/* Carousel */}
       <div class="group relative mx-auto w-full max-w-[1200px]">
-        <img src={dummyCarousel} alt="" class="h-[300px] w-full rounded-xl" />
+        <img
+          src={`/assets/Image/dummyCarousel.jpg`}
+          alt=""
+          class="h-[300px] w-full rounded-xl"
+        />
       </div>
       {/* Search Bar */}
       <SearchBar />

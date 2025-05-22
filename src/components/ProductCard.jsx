@@ -1,6 +1,4 @@
 import { A } from "@solidjs/router";
-import dummyProductImage from "../assets/Image/01 - white tshirt.jpg";
-import starIcon from "../assets/icon/star.png";
 
 export default function ProductCard(props) {
   return (
@@ -35,7 +33,7 @@ export default function ProductCard(props) {
       class="flex h-[350px] w-[186px] cursor-pointer flex-col rounded-xl shadow-md shadow-gray-200 transition-all hover:scale-105"
     >
       <img
-        src={dummyProductImage}
+        src={"/assets/Image/01 - white tshirt.jpg"}
         alt=""
         class="h-3/5 w-full rounded-t-xl object-cover"
       />
@@ -46,7 +44,7 @@ export default function ProductCard(props) {
           {props.formatted_product_price}
         </h3>
         <div class="mt-4 flex h-4 items-center text-xs">
-          <img src={starIcon} alt="" class="h-3 w-3" />
+          <img src={"/assets/icon/star.png"} alt="" class="h-3 w-3" />
           <div class="flex items-center">
             <span class="ml-1">4.9</span>
             <span class="ml-1">|</span>

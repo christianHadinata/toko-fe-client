@@ -261,24 +261,24 @@ export default function Category() {
   const products = categoryProducts[category_name];
 
   return (
-    <div className="mt-2 flex flex-col items-center">
+    <>
       {/* Carousel */}
-      <div class="group relative mx-auto w-full max-w-[1200px]">
+      <div class="group relative mx-auto w-full mb-10">
         <img
           src={`/assets/Image/dummyCarousel${category_name}.jpg`}
           alt=""
-          class="h-[300px] w-full rounded-xl"
+          class="w-full rounded-xl"
         />
       </div>
       {/* <CarouselCategory category_id={category_id} /> */}
       {/* Search Bar */}
       <SearchBarCategory category_name={category_name} />
-      <div className="flex w-full max-w-[1200px] flex-col py-10">
+      <div className="flex w-full flex-col py-10">
         <h2 className="text-xl font-medium capitalize">
           Result for Category{" "}
           <span className="font-semibold text-sky-400">"{category_name}"</span>
         </h2>
-        <div className="mt-5 flex flex-wrap gap-4">
+        <div className="mt-5 product-container">
           <For each={products}>
             {(product, index) => (
               <ProductCard
@@ -392,6 +392,6 @@ export default function Category() {
           </For>
         </div>
       </div>
-    </div>
+    </>
   );
 }

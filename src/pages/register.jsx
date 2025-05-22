@@ -87,7 +87,7 @@ function Register() {
                     class="font-medium text-sky-400 hover:text-sky-300"
                   >
                     {" "}
-                    Go back{" "}
+                    Log in{" "}
                   </A>
                 </h3>
               </form>

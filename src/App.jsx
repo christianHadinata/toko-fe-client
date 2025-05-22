@@ -6,16 +6,31 @@ import Register from "./pages/register";
 import Home from "./pages/home";
 import Category from "./pages/category";
 import Product from "./pages/product-details"
+import Search from "./pages/search";
 
 function App() {
+  const MainLayout = (props) => {
+    return (
+      <>
+        <div class="w-full flex justify-center p-4">
+          <div class="w-full max-w-7xl">{props.children}</div>
+        </div>
+      </>
+    );
+  };
   return (
     <>
       <Router>
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
-        <Route path="/" component={Home} />
-        <Route path="/category/:category_name" component={Category} />
         <Route path="/product-details/:product_id" component={Product} />
+        {/* <Route path="/" component={Home} />
+        <Route path="/category/:category_name" component={Category} /> */}
+          <Route path="/" component={MainLayout}>
+          <Route path="/" component={Home} />
+          <Route path="/category/:category_name" component={Category} />
+          <Route path="/search" component={Search} />
+        </Route>
         <Route path="*" component={page404}></Route>
       </Router>
     </>

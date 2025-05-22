@@ -1,7 +1,4 @@
 import { A } from "@solidjs/router";
-import eyeOpen from "../assets/icon/eyeOpen.png";
-import eyeHidden from "../assets/icon/eyeHidden.png";
-import whiteLogo from "../assets/logo/white.png";
 import { createEffect, createSignal } from "solid-js";
 
 function Register() {
@@ -13,7 +10,12 @@ function Register() {
       <div class="flex">
         <div class="flex h-screen w-1/2 items-center justify-center rounded-br-full bg-sky-400">
           <div class="mb-32 ml-32 flex items-center justify-center">
-            <img src={whiteLogo} width={150} height={150} alt="logo" />
+            <img
+              src={"/assets/logo/white.png"}
+              width={150}
+              height={150}
+              alt="logo"
+            />
             <h1 class="cursor-default text-6xl text-white">E-Commerce</h1>
           </div>
         </div>
@@ -60,7 +62,11 @@ function Register() {
                     onClick={toggleVisibility}
                   >
                     <img
-                      src={isVisible() ? eyeOpen : eyeHidden}
+                      src={
+                        isVisible()
+                          ? "/assets/icon/eyeOpen.png"
+                          : "/assets/icon/eyeHidden.png"
+                      }
                       width={24}
                       height={24}
                       class="mr-2"

@@ -6,6 +6,7 @@ import Register from "./pages/register";
 import Home from "./pages/home";
 import Category from "./pages/category";
 import Search from "./pages/search";
+import Cart from "./pages/cart";
 
 function App() {
   const MainLayout = (props) => {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/" component={Home} />
           <Route path="/category/:category_name" component={Category} />
           <Route path="/search" component={Search} />
+          <Route path="/cart" component={Cart} />
         </Route>
         <Route path="*" component={page404}></Route>
       </Router>

@@ -15,6 +15,7 @@ function ProductDetails({params}){
     const [currentQt, setCurrentQt] = createSignal(1);
     const [open, setOpen] = createSignal(false);
 
+
     const navigate = useNavigate();
 
     const handleNavigate = () => {
@@ -50,7 +51,7 @@ function ProductDetails({params}){
         product_id: 101,
         product_name: "Vibrant Red Lipstick",
         product_price: 19000,
-        product_stock: 50,
+        product_quantity: 10,
         product_details: "A stunning, long-lasting red lipstick.",
         product_featured_image_url: additionalImagesArray[0].src, // Using image from your array
         category_id: 1,
@@ -60,7 +61,7 @@ function ProductDetails({params}){
         product_id: 102,
         product_name: "Maybelline Superstay Ink",
         product_price: 127500,
-        // product_stock is optional, will default to 0
+        // product_quantity is optional, will default to 0
         product_details: "Experience super stay power with matte ink.",
         product_featured_image_url: additionalImagesArray[1].src,
         category_id: 1,
@@ -70,7 +71,7 @@ function ProductDetails({params}){
         product_id: 103,
         product_name: "MAC Ruby Woo Classic",
         product_price: 9000,
-        product_stock: 100,
+        product_quantity: 100,
         product_details: "The iconic Ruby Woo matte lipstick.",
         product_featured_image_url: additionalImagesArray[2].src,
         category_id: 1,
@@ -80,7 +81,7 @@ function ProductDetails({params}){
         product_id: 104,
         product_name: "Mystery Shade No. 3",
         product_price: 150000,
-        product_stock: 25,
+        product_quantity: 25,
         product_details: "A beautiful shade for everyday wear.",
         product_featured_image_url: additionalImagesArray[3].src,
         category_id: 1,
@@ -101,6 +102,8 @@ function ProductDetails({params}){
     setActiveImage(additional_products[0])
     setAdditionalImages(additional_products)
 
+    const maxQt = activeImage().product_quantity;
+    console.log(maxQt);
     return (
         
         <>
@@ -115,17 +118,6 @@ function ProductDetails({params}){
                         />
 
                         <div class="mt-5 flex gap-x-5">
-                        
-                            {/* <img src={activeImage()} 
-                            alt="product image" 
-                            // yang ternary border belum ,langsung set up
-                            class={`h-[129px] w-1/4 cursor-pointer rounded-xl object-cover border-4 border-sky-400`}/> */}
-
-                            {/* {additionalImages().map((additionalImage) => {
-                                <img
-                                src={activeImage()}
-                                class="h-[129px] w-1/4 cursor-pointer rounded-xl object-cover border-4 border-sky-400" />
-                            })} */}
 
                             {/* yang mapping additionalImages */}
 
@@ -149,14 +141,8 @@ function ProductDetails({params}){
 
                     <div class="flex w-1/2 flex-col px-5">
                         <h2 class="text-3xl font-semibold"> {activeImage().product_name} </h2>
-                        <h4 class="mt-5">{activeImage().product_details}</h4>
-                        <div class="flex mt-4 items-center">
-                            <img src="/assets/icon/star.png" alt="" class="h-4 w-4" />
-                            <div className="flex items-center">
-                                <span className="ml-1">4.9</span>
-                                <span className="ml-1">{"(17 rating)"}</span>
-                            </div>
-                        </div>
+                        <h4 class="my-5">{activeImage().product_details}</h4>
+        
                         <h1 class="mt-5 text-4xl font-bold text-sky-400">
                             {"Rp. "} {activeImage().product_price}
                         </h1>
@@ -170,7 +156,11 @@ function ProductDetails({params}){
                                         <button 
                                         class="select-none rounded-md px-4 py-2 text-2xl hover:bg-gray-100 hover:text-sky-400 hover:cursor-pointer"
                                         onClick={() =>
-                                            setCurrentQt(currentQt() - 1)
+                                           
+                                            { if (currentQt() > 1){
+                                                setCurrentQt(currentQt() - 1)}
+
+                                            }
                                         }
                                         >
                                             -
@@ -182,20 +172,26 @@ function ProductDetails({params}){
                                     class="max-w-16 py-2 text-center text-lg outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                     onChange={(e)=>{
                                         let val = Number(e.target.value);
-                                        let maxStock = image.product_stock ?? 0 ;
+                                       
                                         console.log(e.target.value);
                                         if (isNaN(val) || val < 1) {
                                             val = 1;
-                                        } else if ( val > maxStock) {
-                                            val = maxStock
+                                        } else if ( val > maxQt) {
+                                            val = maxQt;
                                         }
+                                        e.target.value = val;
                                     }}
                                     />
                                     <span class="">
                                         <button 
                                         class="select-none rounded-md px-4 py-2 text-2xl hover:bg-gray-100 hover:text-sky-400 hover:cursor-pointer"
                                         onClick={() =>
-                                            setCurrentQt(currentQt() + 1)
+
+                                            {
+                                                if(currentQt() < maxQt){
+
+                                                    setCurrentQt(currentQt() + 1)}
+                                                }
                                         }
                                         >
                                             +
@@ -206,14 +202,14 @@ function ProductDetails({params}){
                             <div>
                                     Total Stock : {" "}
                                     <span class="font-semibold capitalize">
-                                        {activeImage().product_stock}
+                                        {activeImage().product_quantity}
                                     </span>
                             </div>
                         </div>
                         <div class="mt-10 flex gap-x-4">
                                  <button
                                     onClick={() => setOpen(true)}
-                                    class="px-4 py-2 bg-sky-400 text-white rounded-lg capitalize font-medium hover:bg-sky-400 hover:text-sky-200 hover:cursor-pointer"
+                                    class="w-52 bg-sky-400 py-6 text-lg font-medium capitalize text-white rounded-lg hover:bg-sky-400 hover:text-sky-200 hover:cursor-pointer"
                                 >
                                     + Add to cart
                                 </button>
@@ -239,9 +235,9 @@ function ProductDetails({params}){
                                     </div>
                                     </div>
                                 </Modal>
-                                <button class="w-52 bg-sky-400 py-6 text-lg font-medium capitalize text-white rounded-lg hover:bg-sky-400 hover:text-sky-200 hover:cursor-pointer" >
+                                {/* <button class="w-52 bg-sky-400 py-6 text-lg font-medium capitalize text-white rounded-lg hover:bg-sky-400 hover:text-sky-200 hover:cursor-pointer" >
                                     Buy now
-                                </button>
+                                </button> */}
                         </div>
                     </div>
                 </div>

@@ -5,7 +5,7 @@
  * @property {number} product_id 
  * @property {string} product_name 
  * @property {number} product_price
- * @property {number} product_stock
+ * @property {number} product_quantity
  * @property {string} product_details
  * @property {string} product_featured_image_url
  * @property {number} category_id 
@@ -19,7 +19,7 @@
  * @param {number} rawData.product_id
  * @param {string} rawData.product_name
  * @param {number} rawData.product_price
- * @param {number} [rawData.product_stock=0]
+ * @param {number} [rawData.product_quantity=0]
  * @param {string} [rawData.product_details='']
  * @param {string} [rawData.product_featured_image_url='']
  * @param {number} rawData.category_id
@@ -43,7 +43,7 @@ export function createProduct(rawData) {
     product_id: rawData.product_id,
     product_name: rawData.product_name,
     product_price: rawData.product_price,
-    product_stock: rawData.product_stock ?? 0, // Default to 0 if undefined/null
+    product_quantity: rawData.product_quantity ?? 0, // Default to 0 if undefined/null
     product_details: rawData.product_details ?? '',
     product_featured_image_url: rawData.product_featured_image_url ?? '',
     category_id: rawData.category_id,

@@ -26,7 +26,6 @@ export default function Navbar(props) {
                   width={25}
                   height={25}
                   alt="cart"
-                  class="contrast-[.25]"
                 ></img>
               </A>
               <A
@@ -38,7 +37,6 @@ export default function Navbar(props) {
                   width={25}
                   height={25}
                   alt="cart"
-                  class="contrast-[.25]"
                 ></img>
               </A>
             </div>

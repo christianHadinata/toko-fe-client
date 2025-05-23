@@ -244,7 +244,6 @@ export default function Search() {
   return (
     <>
       {/* Search Bar */}
-      <div class="py-10"></div>
       <SearchBar />
       <Show when={filteredProducts().length === 0}>
         <div class="w-full items-center flex flex-col justify-center py-20 text-center">

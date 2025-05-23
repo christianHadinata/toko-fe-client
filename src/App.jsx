@@ -5,9 +5,10 @@ import page404 from "./pages/404";
 import Register from "./pages/register";
 import Home from "./pages/home";
 import Category from "./pages/category";
-import Product from "./pages/product-details"
+import Product from "./pages/product-details";
 import Search from "./pages/search";
 import Cart from "./pages/cart";
+import ProfilePage from "./pages/profile";
 
 function App() {
   const MainLayout = (props) => {
@@ -24,10 +25,11 @@ function App() {
       <Router>
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
-        <Route path="/product-details/:product_id" component={Product} />
         {/* <Route path="/" component={Home} />
         <Route path="/category/:category_name" component={Category} /> */}
-          <Route path="/" component={MainLayout}>
+        <Route path="/" component={MainLayout}>
+          <Route path="/product-details/:product_id" component={Product} />
+          <Route path="/profile" component={ProfilePage}></Route>
           <Route path="/" component={Home} />
           <Route path="/category/:category_name" component={Category} />
           <Route path="/search" component={Search} />

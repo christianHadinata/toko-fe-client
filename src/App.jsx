@@ -8,7 +8,9 @@ import Category from "./pages/category";
 import Product from "./pages/product-details";
 import Search from "./pages/search";
 import Cart from "./pages/cart";
+import ProfilePage from "./pages/profile";
 import Navbar from "./components/NavBar";
+
 
 function App() {
   const MainLayout = (props) => {
@@ -27,6 +29,7 @@ function App() {
         <Route path="/register" component={Register} />
         <Route path="/" component={Navbar}>
           <Route path="/product-details/:product_id" component={Product} />
+          <Route path="/profile" component={ProfilePage}></Route>
           <Route path="/" component={MainLayout}>
             <Route path="/" component={Home} />
             <Route path="/category/:category_name" component={Category} />

@@ -1,9 +1,17 @@
 import { createEffect, createSignal } from "solid-js";
-import { A } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 
 function Login() {
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = createSignal(false);
   const toggleVisibility = () => setIsVisible(!isVisible());
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    localStorage.setItem("token", "dummy-jwt-token");
+    navigate("/");
+    // location.reload();
+  };
 
   return (
     <>
@@ -18,7 +26,7 @@ function Login() {
             </A>
             <div class="mt-2 p-10 shadow-lg slate-200">
               <h1 class="pb-10 text-center text-4xl font-semibold">Login</h1>
-              <form class="flex flex-col gap-y-5" onSubmit={""}>
+              <form class="flex flex-col gap-y-5" onSubmit={handleLogin}>
                 <label class="mb-1 text-gray-700 font-medium"> Email</label>
                 <input
                   type="email"

@@ -13,7 +13,7 @@ export default function Navbar(props) {
       <nav class="fixed z-50 w-full border-b-2 border-gray-200 bg-white p-4 shadow-sm">
         <div class="flex items-center justify-between px-8">
           <A href={"/"} class="cursor-pointer text-3xl text-sky-400">
-            tokosiceha
+            tokofe
           </A>
           <Show when={isLogin()}>
             <div class="flex items-center gap-x-6 py-0.5">

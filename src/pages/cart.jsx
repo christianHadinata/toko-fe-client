@@ -3,9 +3,9 @@ import CartItem from "../components/CartItem";
 
 export default function Cart() {
   const [products, setProducts] = createSignal([
-    { product_id: 1, product_quantity: 10, product_stock: 20 },
-    { product_id: 2, product_quantity: 5, product_stock: 20 },
-    { product_id: 3, product_quantity: 7, product_stock: 20 },
+    { product_id: 1, product_quantity: 10, product_stock: 50 },
+    { product_id: 2, product_quantity: 5, product_stock: 50 },
+    { product_id: 3, product_quantity: 7, product_stock: 50 },
   ]);
 
   const onDelete = (productId) => {
@@ -57,7 +57,7 @@ export default function Cart() {
 
   return (
     <>
-      <div class="flex flex-col gap-8 py-10 items-center">
+      <div class="flex flex-col gap-8 items-center">
         <h1 class="font-semibold text-3xl">Cart Items</h1>
         <For each={products()}>
           {(product, index) => (

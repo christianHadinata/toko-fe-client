@@ -9,8 +9,7 @@ import Product from "./pages/product-details";
 import Search from "./pages/search";
 import Cart from "./pages/cart";
 import ProfilePage from "./pages/profile";
-import Navbar from "./components/NavBar";
-
+import Navbar from "./components/Navbar";
 
 function App() {
   const MainLayout = (props) => {

@@ -7,9 +7,15 @@ import SearchBar from "../components/SearchBar";
 export default function Search() {
   const [query, setQuery] = useSearchParams();
   const keyword = () => query.q?.toLowerCase() || "";
+  const categoryFilter = () => query.category?.toLowerCase() || "";
   const [filteredProducts, setFilteredProducts] = createSignal([]);
 
-  const products = [
+  // Pagination
+  const [currentPage, setCurrentPage] = createSignal(query.page || 1);
+  const [totalPages, setTotalPages] = createSignal(1);
+  const cardPerPage = 20;
+
+  const [products, setProducts] = createSignal([
     {
       product_id: 1,
       product_name: "White T-Shirt",
@@ -211,12 +217,26 @@ export default function Search() {
       category_id: 3,
       category_name: "Groceries",
     },
-  ];
+  ]);
+  /* Under this just dummy because for now just have a few products*/
+  /* The purpose is to show the layout of many products*/
+  setProducts(Array(45).fill(products()).flat());
 
   createEffect(() => {
-    const result = products.filter((product) =>
+    let result = products().filter((product) =>
       product.product_name.toLowerCase().includes(keyword())
     );
+    console.log(result);
+    if (!categoryFilter) {
+      result = result.filter(
+        (product) => product.category_name.toLowerCase() === categoryFilter()
+      );
+    }
+
+    setTotalPages(Math.ceil(result.length / cardPerPage));
+
+    const start = (currentPage() - 1) * cardPerPage;
+    result = result.slice(start, start + cardPerPage);
     setFilteredProducts(result);
   });
   // const searchParams = useSearchParams();
@@ -240,6 +260,12 @@ export default function Search() {
 
   //   fetchProducts();
   // }, [products]);
+
+  const pageHandler = (page) => {
+    setCurrentPage(page);
+    setQuery({ page: page });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <>
@@ -268,396 +294,14 @@ export default function Search() {
           <h2 className="text-xl font-medium capitalize">
             Result for keyword{" "}
             <span className="font-semibold text-sky-400">"{keyword}"</span>
+            <Show when={categoryFilter() !== ""}>
+              <span> in </span>
+              <span className="font-semibold text-sky-400">
+                "{categoryFilter()}"
+              </span>
+            </Show>
           </h2>
           <div className="mt-5 product-container">
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-
-            {/* Under this just dummy because for now just have a few products*/}
-            {/* The purpose is to show the layout of many products*/}
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
-            <For each={filteredProducts()}>
-              {(product, index) => (
-                <ProductCard
-                  key={product.product_id}
-                  {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
-                />
-              )}
-            </For>
             <For each={filteredProducts()}>
               {(product, index) => (
                 <ProductCard
@@ -672,6 +316,42 @@ export default function Search() {
           </div>
         </div>{" "}
       </Show>
+
+      <div id="pagination" class="flex gap-3 justify-center">
+        <Show when={totalPages() > 1}>
+          <Show when={currentPage() > 1}>
+            <button
+              type="text"
+              onClick={(e) => pageHandler(currentPage() - 1)}
+              class={`text-lg hover:cursor-pointer hover:text-sky-400`}
+            >
+              {"<"}
+            </button>
+          </Show>
+
+          {Array.from({ length: totalPages() }, (_, i) => i + 1).map((page) => (
+            <button
+              type="text"
+              onClick={(e) => pageHandler(page)}
+              class={`${
+                page === currentPage() ? "underline font-semibold " : ""
+              } text-xl hover:cursor-pointer hover:text-sky-400`}
+            >
+              {page}
+            </button>
+          ))}
+
+          <Show when={currentPage() < totalPages()}>
+            <button
+              type="text"
+              onClick={(e) => pageHandler(currentPage() + 1)}
+              class={`text-lg hover:cursor-pointer hover:text-sky-400`}
+            >
+              {">"}
+            </button>
+          </Show>
+        </Show>
+      </div>
     </>
   );
 }

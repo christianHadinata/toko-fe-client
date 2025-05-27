@@ -1,8 +1,8 @@
 import { createSignal } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 
-export default function SearchBar() {
-  const [input, setInput] = createSignal("");
+export default function SearchBar(props) {
+  const [input, setInput] = createSignal(props.default || "");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {

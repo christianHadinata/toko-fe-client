@@ -1,19 +1,21 @@
 import { useLocation, useNavigate, useSearchParams } from "@solidjs/router";
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, onMount } from "solid-js";
 
 export default function SearchBarCategory(props) {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [params, setSearchParams] = useSearchParams();
+
+  // MAGIC OVER HERE, DO NOT TOUCH !!!!!! YTTA
+  const [selectedCategory, setSelectedCategory] = createSignal(props.category_name);
   const [search, setSearch] = createSignal(params.search || "");
 
-  let filterRef;
+  // let filterRef;
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (filterRef.value == "all") {
+    if (selectedCategory() === "all") {
       navigate(`/search?q=${search()}`);
     } else {
       setSearchParams({
@@ -43,8 +45,11 @@ export default function SearchBarCategory(props) {
       <div class="w-1/6 px-2 border-2 border-gray-300  rounded-l-xl border-r-0 pr-2">
         <select
           class="w-full h-full"
-          ref={filterRef}
-          value={props.category_name}
+          // ref={filterRef}
+          value={selectedCategory()}
+          onChange={(e) => {
+            setSelectedCategory(e.target.value);
+          }}
         >
           <option value="all">All</option>
           <option value={props.category_name}>{props.category_name}</option>

@@ -51,8 +51,7 @@ export default function Search() {
       product_name: "Wireless Earbuds",
       product_price: 799000,
       product_stock: 20,
-      product_details:
-        "Noise-cancelling wireless earbuds with long battery life.",
+      product_details: "Noise-cancelling wireless earbuds with long battery life.",
       product_featured_image_url: "/images/earbuds.jpg",
       category_id: 4,
       category_name: "Electronics",
@@ -218,19 +217,17 @@ export default function Search() {
       category_name: "Groceries",
     },
   ]);
+
   /* Under this just dummy because for now just have a few products*/
   /* The purpose is to show the layout of many products*/
+  // Lol?
   setProducts(Array(45).fill(products()).flat());
 
   createEffect(() => {
-    let result = products().filter((product) =>
-      product.product_name.toLowerCase().includes(keyword())
-    );
+    let result = products().filter((product) => product.product_name.toLowerCase().includes(keyword()));
     console.log(result);
     if (!categoryFilter) {
-      result = result.filter(
-        (product) => product.category_name.toLowerCase() === categoryFilter()
-      );
+      result = result.filter((product) => product.category_name.toLowerCase() === categoryFilter());
     }
 
     setTotalPages(Math.ceil(result.length / cardPerPage));
@@ -270,7 +267,7 @@ export default function Search() {
   return (
     <>
       {/* Search Bar */}
-      <SearchBar />
+      <SearchBar default={keyword()} />
       <Show when={filteredProducts().length === 0}>
         <div class="w-full items-center flex flex-col justify-center py-20 text-center">
           <img
@@ -280,25 +277,18 @@ export default function Search() {
             // height={400}
             class="lg:max-w-lg lg:max-h-lg max-w-sm max-h-sm"
           />
-          <p class="font-medium lg:text-2xl text-xl">
-            No Result for Keyword = "{keyword}"
-          </p>
-          <p class="lg:text-lg text-base text-gray-500 py-5">
-            Try to search with another keyword!
-          </p>
+          <p class="font-medium lg:text-2xl text-xl">No Result for Keyword = "{keyword}"</p>
+          <p class="lg:text-lg text-base text-gray-500 py-5">Try to search with another keyword!</p>
         </div>
       </Show>
       <Show when={filteredProducts().length > 0}>
         {" "}
         <div className="flex w-full  flex-col py-10">
           <h2 className="text-xl font-medium capitalize">
-            Result for keyword{" "}
-            <span className="font-semibold text-sky-400">"{keyword}"</span>
+            Result for keyword <span className="font-semibold text-sky-400">"{keyword}"</span>
             <Show when={categoryFilter() !== ""}>
               <span> in </span>
-              <span className="font-semibold text-sky-400">
-                "{categoryFilter()}"
-              </span>
+              <span className="font-semibold text-sky-400">"{categoryFilter()}"</span>
             </Show>
           </h2>
           <div className="mt-5 product-container">
@@ -307,9 +297,7 @@ export default function Search() {
                 <ProductCard
                   key={product.product_id}
                   {...product}
-                  formatted_product_price={formatCurrency(
-                    product.product_price
-                  )}
+                  formatted_product_price={formatCurrency(product.product_price)}
                 />
               )}
             </For>
@@ -317,7 +305,10 @@ export default function Search() {
         </div>{" "}
       </Show>
 
-      <div id="pagination" class="flex gap-3 justify-center">
+      <div
+        id="pagination"
+        class="flex gap-3 justify-center"
+      >
         <Show when={totalPages() > 1}>
           <Show when={currentPage() > 1}>
             <button
@@ -333,9 +324,7 @@ export default function Search() {
             <button
               type="text"
               onClick={(e) => pageHandler(page)}
-              class={`${
-                page === currentPage() ? "underline font-semibold " : ""
-              } text-xl hover:cursor-pointer hover:text-sky-400`}
+              class={`${page === currentPage() ? "underline font-semibold " : ""} text-xl hover:cursor-pointer hover:text-sky-400`}
             >
               {page}
             </button>

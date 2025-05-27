@@ -43,7 +43,7 @@ function App() {
           <Route
             path="/profile"
             component={ProfilePage}
-          ></Route>
+          />
           <Route
             path="/"
             component={MainLayout}

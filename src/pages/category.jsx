@@ -6,7 +6,11 @@ import { useParams } from "@solidjs/router";
 
 export default function Category() {
   const params = useParams();
-  const { category_name } = params;
+
+  const [categoryName, setCategoryName] = createSignal(params.category_name);
+
+  // const category_name = () => params.category_name;
+  // const { category_name } = params;
 
   // const [categoryData, setCategoryData] = createSignal();
 
@@ -91,8 +95,7 @@ export default function Category() {
         product_name: "Wireless Earbuds",
         product_price: 799000,
         product_stock: 20,
-        product_details:
-          "Noise-cancelling wireless earbuds with long battery life.",
+        product_details: "Noise-cancelling wireless earbuds with long battery life.",
         product_featured_image_url: "/images/earbuds.jpg",
         category_id: 4,
         category_name: "Electronics",
@@ -258,25 +261,24 @@ export default function Category() {
     ],
   };
 
-  const products = categoryProducts[category_name];
+  const products = categoryProducts[params.category_name];
 
   return (
     <>
       {/* Carousel */}
       <div class="group relative mx-auto w-full mb-10">
         <img
-          src={`/assets/Image/dummyCarousel${category_name}.jpg`}
+          src={`/assets/Image/dummyCarousel${params.category_name}.jpg`}
           alt=""
           class="w-full rounded-xl"
         />
       </div>
       {/* <CarouselCategory category_id={category_id} /> */}
       {/* Search Bar */}
-      <SearchBarCategory category_name={category_name} />
+      <SearchBarCategory category_name={params.category_name} />
       <div className="flex w-full flex-col py-10">
         <h2 className="text-xl font-medium capitalize">
-          Result for Category{" "}
-          <span className="font-semibold text-sky-400">"{category_name}"</span>
+          Result for Category <span className="font-semibold text-sky-400">"{params.category_name}"</span>
         </h2>
         <div className="mt-5 product-container">
           <For each={products}>

@@ -31,25 +31,25 @@ export default function CartItem(props) {
               <div class="flex items-center justify-center rounded-2xl">
                 <button
                   onclick={props.onDecreaseQuantity}
-                  class={`p-4 text-lg 
+                  class={`px-4 py-2 text-lg rounded-md 
                     ${
                       props.product.product_quantity === 1
                         ? "cursor-not-allowed text-gray-500"
-                        : "cursor-pointer text-black"
+                        : "cursor-pointer text-black hover:bg-gray-100 hover:text-sky-400"
                     }`}
                   disabled={props.product.product_quantity === 1}
                 >
                   -
                 </button>
-                <p class="text-lg">{props.product.product_quantity}</p>
+                <p class="text-lg p-4">{props.product.product_quantity}</p>
                 <button
                   onclick={props.onIncreaseQuantity}
-                  class={`p-4 text-lg 
+                  class={`px-4 py-2  text-lg rounded-md 
                     ${
                       props.product.product_quantity ===
                       props.product.product_stock
                         ? "cursor-not-allowed text-gray-500"
-                        : "cursor-pointer text-black"
+                        : "cursor-pointer text-black hover:bg-gray-100 hover:text-sky-400"
                     }`}
                   disabled={
                     props.product.product_quantity ===

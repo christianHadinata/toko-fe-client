@@ -1,5 +1,6 @@
 import { createEffect, createSignal, Show, onMount } from "solid-js";
 import { A } from "@solidjs/router";
+import ProfileDropdown from "../components/ProfileDropdown";
 
 export default function Navbar(props) {
   const [isLogin, setIsLogin] = createSignal(false);
@@ -28,17 +29,7 @@ export default function Navbar(props) {
                   alt="cart"
                 ></img>
               </A>
-              <A
-                href={"/profile"}
-                class="rounded-md p-2 hover:bg-gray-100 focus:bg-gray-200"
-              >
-                <img
-                  src={"/assets/icon/profile-1.png"}
-                  width={25}
-                  height={25}
-                  alt="cart"
-                ></img>
-              </A>
+              <ProfileDropdown />
             </div>
           </Show>
           <Show when={!isLogin()}>

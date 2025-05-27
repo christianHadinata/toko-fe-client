@@ -24,18 +24,51 @@ function App() {
   return (
     <>
       <Router>
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route path="/" component={Navbar}>
-          <Route path="/product-details/:product_id" component={Product} />
-          <Route path="/profile" component={ProfilePage}></Route>
-          <Route path="/" component={MainLayout}>
-            <Route path="/" component={Home} />
-            <Route path="/category/:category_name" component={Category} />
-            <Route path="/search" component={Search} />
-            <Route path="/cart" component={Cart} />
+        <Route
+          path="/login"
+          component={Login}
+        />
+        <Route
+          path="/register"
+          component={Register}
+        />
+        <Route
+          path="/"
+          component={Navbar}
+        >
+          <Route
+            path="/product-details/:product_id"
+            component={Product}
+          />
+          <Route
+            path="/profile"
+            component={ProfilePage}
+          ></Route>
+          <Route
+            path="/"
+            component={MainLayout}
+          >
+            <Route
+              path="/"
+              component={Home}
+            />
+            <Route
+              path="/category/:category_name"
+              component={Category}
+            />
+            <Route
+              path="/search"
+              component={Search}
+            />
+            <Route
+              path="/cart"
+              component={Cart}
+            />
           </Route>
-          <Route path="*" component={page404}></Route>
+          <Route
+            path="*"
+            component={page404}
+          ></Route>
         </Route>
       </Router>
     </>

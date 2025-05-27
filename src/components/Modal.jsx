@@ -15,11 +15,11 @@ export default function Modal(props) {
     <Show when={props.open}>
       <Portal>
         <div
-          class="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.5)]"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
           onClick={props.onClose}
         >
           <div
-            class="bg-white rounded-2xl shadow-lg max-w-md w-full mx-4 lg:max-w-lg lg:mx-0 text-center"
+            class="bg-white rounded-2xl shadow-lg max-w-md w-full mx-4 lg:max-w-lg lg:mx-0"
             onClick={(e) => e.stopPropagation()}
           >
             {props.children}

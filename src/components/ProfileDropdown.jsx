@@ -22,25 +22,40 @@ export default function ProfileDropdown() {
           <p class="font-semibold text-lg">Michael Scofield</p>
           <p class="text-sm text-gray-600 pb-2">michaelscofield@gmail.com</p>
           <div class="flex items-center text-sm mt-1 text-gray-600">
-            <img src="/assets/icon/phone.png" alt="" class="w-5 h-5" />
+            <img
+              src="/assets/icon/phone.png"
+              alt=""
+              class="w-5 h-5"
+            />
             <span class="ml-2">: 08123456789</span>
           </div>
         </div>
         <hr class="my-2" />
         <div class="flex flex-col gap-2">
-          <div class="w-full p-2 hover:border-sky-400 hover:border-2 rounded-lg">
-            <A href="/profile" class="flex items-center gap-2 text-sm ">
-              <img src="/assets/icon/edit-profile.png" alt="" class="w-5 h-5" />
+          <div class="w-full p-2 hover:bg-slate-100 rounded-lg">
+            <A
+              href="/profile"
+              class="flex items-center gap-2 text-sm "
+            >
+              <img
+                src="/assets/icon/edit-profile.png"
+                alt=""
+                class="w-5 h-5"
+              />
               Edit Profile
             </A>
           </div>
-          <div class="w-full p-2 hover:border-red-400 hover:border-2 rounded-lg">
+          <div class="w-full p-2 hover:bg-slate-100 rounded-lg">
             <A
               href="/login"
               class="flex items-center gap-2 text-sm "
               onclick={handleLogout}
             >
-              <img src="/assets/icon/logout.png" alt="" class="w-5 h-5" />
+              <img
+                src="/assets/icon/logout.png"
+                alt=""
+                class="w-5 h-5"
+              />
               Log out
             </A>
           </div>

@@ -16,14 +16,12 @@ export default function SearchBar() {
   return (
     <form
       onSubmit={handleSubmit}
-      class="flex w-full rounded-xl border-2 border-gray-300 px-5 py-2"
+      class="flex w-full rounded-xl border-2 border-gray-300 px-5 py-2 items-center"
     >
       <img
         src={"/assets/icon/search-1.png"}
-        width={20}
-        height={10}
         alt="search"
-        class="contrast-0"
+        class="contrast-0 w-6 h-6"
       />
       <input
         type="text"

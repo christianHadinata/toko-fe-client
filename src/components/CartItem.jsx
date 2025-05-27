@@ -10,33 +10,30 @@ export default function CartItem(props) {
       />
       <div class="flex flex-col gap-y-6 justify-between">
         <div>
-          <h2 class="capitalize font-semibold text-clip text-xl">
-            Vibrant Red Lipstick
-          </h2>
-          <p class="text-clip-2 text-gray-500 ">
-            A stunning, long-lasting red lipstick.
-          </p>
+          <h2 class="capitalize font-semibold text-clip text-xl">Vibrant Red Lipstick</h2>
+          <p class="text-clip-2 text-gray-500 ">A stunning, long-lasting red lipstick.</p>
         </div>
         <div>
           <p class="">Stock: 50</p>
           <div class="flex justify-between items-end flex-1">
             <p class="font-bold text-sky-400 md:text-lg">Price: Rp 19.000</p>
+
             <div class=" flex items-center">
               <button
                 class="cursor-pointer rounded-md p-2 hover:bg-gray-100 focus:bg-gray-200"
                 onclick={props.onDelete}
               >
-                <img src="/assets/icon/deleteBin.png" alt="" class="w-8" />
+                <img
+                  src="/assets/icon/deleteBin.png"
+                  alt=""
+                  class="w-8"
+                />
               </button>
               <div class="flex items-center justify-center rounded-2xl">
                 <button
                   onclick={props.onDecreaseQuantity}
                   class={`px-4 py-2 text-lg rounded-md 
-                    ${
-                      props.product.product_quantity === 1
-                        ? "cursor-not-allowed text-gray-500"
-                        : "cursor-pointer text-black hover:bg-gray-100 hover:text-sky-400"
-                    }`}
+                    ${props.product.product_quantity === 1 ? "cursor-not-allowed text-gray-500" : "cursor-pointer text-black hover:bg-gray-100"}`}
                   disabled={props.product.product_quantity === 1}
                 >
                   -
@@ -45,16 +42,8 @@ export default function CartItem(props) {
                 <button
                   onclick={props.onIncreaseQuantity}
                   class={`px-4 py-2  text-lg rounded-md 
-                    ${
-                      props.product.product_quantity ===
-                      props.product.product_stock
-                        ? "cursor-not-allowed text-gray-500"
-                        : "cursor-pointer text-black hover:bg-gray-100 hover:text-sky-400"
-                    }`}
-                  disabled={
-                    props.product.product_quantity ===
-                    props.product.product_stock
-                  }
+                    ${props.product.product_quantity === props.product.product_stock ? "cursor-not-allowed text-gray-500" : "cursor-pointer text-black hover:bg-gray-100"}`}
+                  disabled={props.product.product_quantity === props.product.product_stock}
                 >
                   +
                 </button>

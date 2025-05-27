@@ -22,7 +22,10 @@ export default function CartItem(props) {
           <div class="flex justify-between items-end flex-1">
             <p class="font-bold text-sky-400 md:text-lg">Price: Rp 19.000</p>
             <div class=" flex items-center">
-              <button class="cursor-pointer" onclick={props.onDelete}>
+              <button
+                class="cursor-pointer rounded-md p-2 hover:bg-gray-100 focus:bg-gray-200"
+                onclick={props.onDelete}
+              >
                 <img src="/assets/icon/deleteBin.png" alt="" class="w-8" />
               </button>
               <div class="flex items-center justify-center rounded-2xl">

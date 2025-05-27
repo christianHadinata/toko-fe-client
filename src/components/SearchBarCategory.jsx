@@ -1,25 +1,40 @@
-import { useNavigate } from "@solidjs/router";
+import { useLocation, useNavigate, useSearchParams } from "@solidjs/router";
+import { createEffect, createSignal } from "solid-js";
 
 export default function SearchBarCategory(props) {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  let filterRef;
-  let searchRef;
+  const [params, setSearchParams] = useSearchParams()
+  const [search, setSearch] = createSignal(params.search || "")
+
+  let filterRef
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const filter = filterRef.value;
-    const searchQuery = searchRef.value.trim();
 
-    if (searchQuery !== "") {
-      let url = `/search?q=${searchQuery}`;
-
-      if (filter !== "") {
-        url += `&category=${filter}`;
-      }
-
-      navigate(url);
+    if(filterRef.value == "all"){
+      navigate(`/search?q=${search()}`)
+    }else {
+      setSearchParams({
+        search:search()
+      })  
     }
+
+  
+   
+    // const filter = filterRef.value;
+    // const searchQuery = searchRef.value.trim();
+
+    // if (searchQuery !== "") {
+    //   let url = `/search?q=${searchQuery}`;
+
+    //   if (filter !== "") {
+    //     url += `&category=${filter}`;
+    //   }
+
+    //   navigate(url);
+    // }
   };
 
   return (
@@ -29,7 +44,7 @@ export default function SearchBarCategory(props) {
         ref={filterRef}
         value={props.category_name}
       >
-        <option value="">All</option>
+        <option value="all">All</option>
         <option value={props.category_name}>{props.category_name}</option>
       </select>
       <div class="border-2 border-gray-300 w-full flex rounded-r-xl py-2">
@@ -41,7 +56,8 @@ export default function SearchBarCategory(props) {
           class="contrast-0 py-2 ml-2 "
         ></img>
         <input
-          ref={searchRef}
+          value={search()}
+          onInput={(e)=>setSearch(e.target.value)}
           type="text"
           placeholder="Cari di Tokofe"
           class="w-full px-5 placeholder-gray-600 outline-none py-2"

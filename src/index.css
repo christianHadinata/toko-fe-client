@@ -7,3 +7,7 @@
 .active.nav-category {
   @apply underline;
 }
+
+html {
+  scroll-behavior: smooth;
+}

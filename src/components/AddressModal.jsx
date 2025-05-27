@@ -2,6 +2,7 @@ import { createSignal } from "solid-js";
 import Modal from "./Modal.jsx";
 import Dropdown2 from "./Dropdown2.jsx";
 
+// isOpen, title, onClose, defaultAddressLabel, defaultAddress, defaultDistrict, defaultSubDistrict, onSave
 export default function AddressModal(props) {
   const [addressLabel, setAddressLabel] = createSignal(props.defaultAddressLabel || "");
   const [address, setAddress] = createSignal(props.defaultAddress || "");
@@ -19,8 +20,6 @@ export default function AddressModal(props) {
 
   const [selectedDistrict, setSelectedDistrict] = createSignal(props.defaultDistrict || districtsOptions()[0].value);
   const [selectedSubDistrict, setSelectedSubDistrict] = createSignal(props.defaultSubDistrict || subDistrictsOptions()[0].value);
-
-  // isOpen, title, onClose, defaultAddressLabel, defaultAddress, defaultDistrict, defaultSubDistrict, onSave
 
   return (
     <>

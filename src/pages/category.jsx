@@ -2,7 +2,8 @@ import { createSignal } from "solid-js";
 import ProductCard from "../components/ProductCard";
 import SearchBarCategory from "../components/SearchBarCategory";
 import { formatCurrency } from "../utils/formatCurrency";
-import { useParams } from "@solidjs/router";
+import { useParams, useSearchParams } from "@solidjs/router";
+import Pagination from "../components/Pagination.jsx";
 
 export default function Category() {
   const params = useParams();
@@ -263,6 +264,16 @@ export default function Category() {
 
   const products = categoryProducts[params.category_name];
 
+  const [query, setQuery] = useSearchParams();
+  const [currentPage, setCurrentPage] = createSignal(Number(query.page) || 1);
+  const [totalPages, setTotalPages] = createSignal(8);
+
+  const pageHandler = (page) => {
+    setCurrentPage(page);
+    setQuery({ page: page });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <>
       {/* Carousel */}
@@ -394,6 +405,12 @@ export default function Category() {
           </For>
         </div>
       </div>
+
+      <Pagination
+        totalPages={totalPages()}
+        currentPage={currentPage()}
+        pageHandler={pageHandler}
+      />
     </>
   );
 }

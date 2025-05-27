@@ -3,6 +3,7 @@ import ProductCard from "../components/ProductCard";
 import { formatCurrency } from "../utils/formatCurrency";
 import { useSearchParams } from "@solidjs/router";
 import SearchBar from "../components/SearchBar";
+import Pagination from "../components/Pagination.jsx";
 
 export default function Search() {
   const [query, setQuery] = useSearchParams();
@@ -11,8 +12,14 @@ export default function Search() {
   const [filteredProducts, setFilteredProducts] = createSignal([]);
 
   // Pagination
-  const [currentPage, setCurrentPage] = createSignal(query.page || 1);
+  const [currentPage, setCurrentPage] = createSignal(Number(query.page) || 1);
   const [totalPages, setTotalPages] = createSignal(1);
+
+  const pageHandler = (page) => {
+    setCurrentPage(page);
+    setQuery({ page: page });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const cardPerPage = 20;
 
   const [products, setProducts] = createSignal([
@@ -258,12 +265,6 @@ export default function Search() {
   //   fetchProducts();
   // }, [products]);
 
-  const pageHandler = (page) => {
-    setCurrentPage(page);
-    setQuery({ page: page });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <>
       {/* Search Bar */}
@@ -305,7 +306,7 @@ export default function Search() {
         </div>{" "}
       </Show>
 
-      <div
+      {/* <div
         id="pagination"
         class="flex gap-3 justify-center"
       >
@@ -340,7 +341,12 @@ export default function Search() {
             </button>
           </Show>
         </Show>
-      </div>
+      </div> */}
+      <Pagination
+        totalPages={totalPages()}
+        currentPage={currentPage()}
+        pageHandler={pageHandler}
+      />
     </>
   );
 }

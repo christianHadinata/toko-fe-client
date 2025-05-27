@@ -10,18 +10,18 @@ export default function page404() {
             alt="404 background"
             class="mx-auto w-160 animate-[float_3s_infinite]  rounded-lg"
           />
-          <h1 class="text-7xl font-extrabold text-blue-700 mt-6">
-            Kamu mau kemana?
+          <h1 class="text-6xl font-extrabold text-sky-400 mt-6">
+            Oops! Page Not Found.
           </h1>
-          <p class="text-xl text-gray-700 mt-2">
-            Halaman yang kamu cari tidak ada
+          <p class="text-xl text-gray-700 mt-4">
+            The page you are looking for doesn't exist.
           </p>
           <A
             href={"/"}
-            class="mt-6 inline-block bg-blue-600 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg transform transition hover:scale-105 hover:bg-blue-700"
+            class="mt-6 inline-block bg-sky-400 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg transform transition hover:scale-105 hover:bg-sky-500"
           >
             {" "}
-            Kembali{" "}
+            Back To Home{" "}
           </A>
         </div>
       </div>

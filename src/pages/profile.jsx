@@ -86,51 +86,48 @@ function ProfilePage() {
               </Match>
             </Switch>
           </div>
-          <div class="flex gap-x-2">
-            <div>
-              <p class="py-1">Username</p>
-              <p class="py-1">Phone Number</p>
-              <p class="py-1">Email</p>
-            </div>
-
+          <div class="grid grid-cols-[1fr_2fr] gap-2">
             <Switch>
               <Match when={activeEditProfile()}>
+                <p>Username</p>
                 <div>
-                  <p class="py-1">
-                    {" "}
-                    :{" "}
-                    <input
-                      type="text"
-                      class="rounded-xl border-black border-1 px-2"
-                      value={userProfile().username}
-                    />{" "}
-                  </p>
-                  <p class="py-1">
-                    {" "}
-                    :{" "}
-                    <input
-                      type="text"
-                      class="rounded-xl border-black border-1 px-2"
-                      value={userProfile().phone_number}
-                    />{" "}
-                  </p>
-                  <p class="py-1">
-                    {" "}
-                    :{" "}
-                    <input
-                      type="text"
-                      class="rounded-xl border-black border-1 px-2"
-                      value={userProfile().email}
-                    />{" "}
-                  </p>
+                  <span class="mr-1">:</span>
+                  <input
+                    type="text"
+                    class="rounded-xl border-black border-1 px-2"
+                    value={userProfile().username}
+                  />
+                </div>
+
+                <p>Phone Number</p>
+                <div>
+                  <span class="mr-1">:</span>
+                  <input
+                    type="text"
+                    class="rounded-xl border-black border-1 px-2"
+                    value={userProfile().phone_number}
+                  />
+                </div>
+
+                <p>Email</p>
+                <div>
+                  <span class="mr-1">:</span>
+                  <input
+                    type="text"
+                    class="rounded-xl border-black border-1 px-2"
+                    value={userProfile().email}
+                  />
                 </div>
               </Match>
               <Match when={!activeEditProfile()}>
-                <div>
-                  <p class="py-1"> : {userProfile().username}</p>
-                  <p class="py-1"> : {userProfile().phone_number}</p>
-                  <p class="py-1"> : {userProfile().email}</p>
-                </div>
+                <p>Username</p>
+                <p> : {userProfile().username}</p>
+
+                <p>Phone Number</p>
+                <p> : {userProfile().phone_number}</p>
+
+                <p>Email</p>
+                <p> : {userProfile().email}</p>
               </Match>
             </Switch>
 

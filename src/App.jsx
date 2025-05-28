@@ -36,10 +36,7 @@ function App() {
           path="/"
           component={Navbar}
         >
-          <Route
-            path="/product-details/:product_id"
-            component={Product}
-          />
+
           <Route
             path="/profile"
             component={ProfilePage}
@@ -48,6 +45,10 @@ function App() {
             path="/"
             component={MainLayout}
           >
+            <Route
+              path="/product-details/:product_id"
+              component={Product}
+            />
             <Route
               path="/"
               component={Home}

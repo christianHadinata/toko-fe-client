@@ -3,34 +3,47 @@ import Modal from "./Modal.jsx";
 import Dropdown2 from "./Dropdown2.jsx";
 import districtSignal from "../stores/districtSignal.js";
 import { flipIsCreatingAddress } from "../stores/creatingAddress.js";
-
+import { districts } from "../data/districts.js";
+import { subdistricts } from "../data/subdistricts.js";
 
 // isOpen, title, onClose, defaultAddressLabel, defaultAddress, defaultDistrict, defaultSubDistrict, onSave
 export default function AddressModal(props) {
-  const [addressLabel, setAddressLabel] = createSignal(props.defaultAddressLabel || "");
+  const [addressLabel, setAddressLabel] = createSignal(
+    props.defaultAddressLabel || ""
+  );
   const [address, setAddress] = createSignal(props.defaultAddress || "");
   const [_, setDistrictId] = districtSignal;
 
-  // const [districtsOptions, setDistrictsOptions] = createSignal(() => props.districtsOpt);
-  // const [subDistrictsOptions, setSubDistrictsOptions] = createSignal(()=>props.subDistrictsOpt);
-  
-  // console.log(props.isEdit)
+  const [selectedDistrict, setSelectedDistrict] = createSignal(
+    props.defaultDistrict
+  );
+  const [selectedSubDistrict, setSelectedSubDistrict] = createSignal(
+    props.defaultSubDistrict
+  );
 
-  // console.log(props.districtsOptions[0])
-  // console.log(props.subDistrictsOptions[0])
+  const [filteredSubDistrict, setFilteredSubDistrict] = createSignal();
 
-  const [selectedDistrict, setSelectedDistrict] = createSignal(props.defaultDistrict);
-  const [selectedSubDistrict, setSelectedSubDistrict] = createSignal(props.defaultSubDistrict);
-  
-  console.log(selectedDistrict())
-  console.log(selectedSubDistrict())
+  createEffect(() => {
+    setFilteredSubDistrict(
+      subdistricts.filter(
+        (currSubDistricts) =>
+          currSubDistricts.district_id === selectedDistrict().district_id
+      )
+    );
+  });
 
+  const handleRefreshSelected = () => {
+    setSelectedDistrict(props.defaultDistrict);
+    setSelectedSubDistrict(props.defaultSubDistrict);
+  };
 
   return (
     <>
       <Modal
         open={props.isOpen}
         onClose={() => {
+          setSelectedDistrict(props.defaultDistrict);
+          setSelectedSubDistrict(props.defaultSubDistrict);
           props.onClose();
         }}
       >
@@ -78,7 +91,7 @@ export default function AddressModal(props) {
             <div class="flex">
               <span class="mr-2">:</span>
               <Dropdown2
-                items={props.districtsOptions}
+                items={districts}
                 value={selectedDistrict()}
                 // defaultValue={props.defaultDistrict}
                 onChange={(selectedValue) => {
@@ -92,12 +105,11 @@ export default function AddressModal(props) {
             <div class="flex items-center">
               <span class="mr-2">:</span>
               <Dropdown2
-                items={props.subDistrictsOptions}
+                items={filteredSubDistrict()}
                 value={selectedSubDistrict()}
                 onChange={(val) => {
                   console.log(val);
                   setSelectedSubDistrict(val);
-                  // console.log(selectedSubDistrict());
                 }}
               />
             </div>
@@ -107,9 +119,20 @@ export default function AddressModal(props) {
               class="rounded-2xl border-1 px-3 py-1 hover:cursor-pointer hover:bg-slate-100"
               onClick={() => {
                 flipIsCreatingAddress();
-                console.log(addressLabel(), address(), selectedDistrict(), selectedSubDistrict());
+                console.log(
+                  addressLabel(),
+                  address(),
+                  selectedDistrict(),
+                  selectedSubDistrict()
+                );
 
-                props.onSave(addressLabel(), address(), selectedDistrict(), selectedSubDistrict());
+                props.onSave(
+                  addressLabel(),
+                  address(),
+                  selectedDistrict(),
+                  selectedSubDistrict(),
+                  handleRefreshSelected
+                );
               }}
             >
               Save

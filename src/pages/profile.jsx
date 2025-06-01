@@ -8,9 +8,13 @@ import AddressModal from "../components/AddressModal.jsx";
 // import districtSignal from "../stores/districtSignal.js";
 import { bumpUserVersion } from "../stores/userVersion.js";
 import { addressVersion, bumpAddressVersion } from "../stores/addressVersion";
-import { isCreatingAddress, flipIsCreatingAddress } from "../stores/creatingAddress";
-import { districtsOptions, subDistrictsOptions, setSubDistrictsOptions ,fetchDistrictsAndSubdistricts } from "../resources/districtAndSubdistrict";
-import { jwtDecode } from 'jwt-decode'
+import {
+  isCreatingAddress,
+  flipIsCreatingAddress,
+} from "../stores/creatingAddress";
+import { jwtDecode } from "jwt-decode";
+import { districts } from "../data/districts";
+import { subdistricts } from "../data/subdistricts";
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -23,127 +27,160 @@ function ProfilePage() {
   const [addresses, setAddresses] = createSignal([]);
 
   // Seandaikan nanti mau implementasi cancel buat yang edit user profile nya
-  const [ draftUser, setDraftUser ] = createSignal({});
+  const [draftUser, setDraftUser] = createSignal({});
 
-  // Buat data dari user untuk profile 
-  onMount(()=>{
-      fetchData();
-  });
-
-  // Buat cek perubahan addresses yang dimiliki sama user (nambah / edit)
-  createEffect(()=> {
-    addressVersion();
+  // Buat data dari user untuk profile
+  onMount(() => {
+    fetchData();
     fetchAddresses();
   });
 
+  // Buat cek perubahan addresses yang dimiliki sama user (nambah / edit)
+  // createEffect(() => {
+  //   addressVersion();
+  //   fetchAddresses();
+  // });
+
   const fetchData = async () => {
     try {
-        // const id = signalId()
-        const token = localStorage.getItem("token");
-        const id = jwtDecode(token).user_id;
+      // const id = signalId()
+      const token = localStorage.getItem("token");
+      const id = jwtDecode(token).user_id;
 
-        const response = await fetch(`http://localhost:5000/api/v1/users/${id}`,{
-          method : 'get',
-          headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        }
-        });
-        
-        const data = await response.json();
-        setUserProfile(data);            
+      const response = await fetch(`http://localhost:5000/api/v1/users/${id}`, {
+        method: "get",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-        setDraftUser(data);
-      } catch (error) {
-        console.log(error)
-      }
-  }
+      const data = await response.json();
+      setUserProfile(data);
+
+      setDraftUser(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchAddresses = async () => {
     try {
-        // const id = signalId()
-        const token = localStorage.getItem("token");
-        const id = jwtDecode(token).user_id;
-        console.log(" awal fetch")
-        const response = await fetch(`http://localhost:5000/api/v1/users/addresses`,{
-          method : 'GET',
+      // const id = signalId()
+      const token = localStorage.getItem("token");
+      const id = jwtDecode(token).user_id;
+      console.log(" awal fetch");
+      const response = await fetch(
+        `http://localhost:5000/api/v1/users/addresses`,
+        {
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          }
-        });
-        console.log(" selesai fetch")
-        
-        const data = await response.json();
-        console.log(data)
-
-        if (data.success){
-          setAddresses(data.addresses)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-  }
-
-  const handleSaveProfile = async () => {      
-    try {
-        // const id = signalId()
-        const token = localStorage.getItem("token");
-        const id = jwtDecode(token).user_id;
-
-        const body = () => draftUser();
-
-        const response = await fetch(`http://localhost:5000/api/v1/users/${id}/updateuser`,{
-          method : 'PATCH',
-          headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-          body : JSON.stringify(body())
-        });
-        
-        const data = await response.json();
-
-        if (data.success){
-          setUserProfile({ ...draftUser() });
-          bumpUserVersion();
         }
+      );
+      console.log(" selesai fetch");
 
-      } catch (error) {
-        console.log(error)
+      const data = await response.json();
+      console.log(data);
+
+      if (data.success) {
+        setAddresses(data.addresses);
       }
-  }
-
-  const handleNewAddress = async ( {address_label, address_name, subdistrict} ) => {
-    try {
-        const token = localStorage.getItem("token");
-        console.log(subdistrict)
-        const body = {
-          address_label, 
-          address_name, 
-          subdistrict_id : subdistrict
-        };
-
-        console.log(body)
-        const response = await fetch(`http://localhost:5000/api/v1/users/newaddress`,{
-          method : 'POST',
-          headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          },
-          body : JSON.stringify(body)
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          bumpAddressVersion();
-        }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-  
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      // const id = signalId()
+      const token = localStorage.getItem("token");
+      const id = jwtDecode(token).user_id;
+
+      const body = () => draftUser();
+
+      const response = await fetch(
+        `http://localhost:5000/api/v1/users/${id}/updateuser`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body()),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        setUserProfile({ ...draftUser() });
+        bumpUserVersion();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleNewAddress = async ({
+    address_label,
+    address_name,
+    subdistrict_id,
+  }) => {
+    try {
+      const token = localStorage.getItem("token");
+      console.log(subdistrict_id);
+      const body = {
+        address_label,
+        address_name,
+        subdistrict_id,
+      };
+
+      console.log(body);
+      const response = await fetch(
+        `http://localhost:5000/api/v1/users/newaddress`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        bumpAddressVersion();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // const handleSaveAddress = async ({
+  //   idx,
+  //   addressId,
+  //   addressLabel,
+  //   address,
+  //   selectedSubDistrict,
+  // }) => {
+  //   console.log(idx);
+  //   console.log(addressId);
+  //   const newAddresses = [...addresses()];
+  //   console.log(newAddresses);
+  //   newAddresses[idx] = {
+  //     addressId,
+  //     addressLabel,
+  //     address,
+  //     selectedSubDistrict,
+  //   };
+  //   setAddresses(newAddresses);
+  //   console.log(addresses());
+  // };
 
   return (
     <>
@@ -186,12 +223,11 @@ function ProfilePage() {
                     type="text"
                     class="rounded-xl border-black border-1 px-2"
                     value={userProfile()?.user_name}
-                    onChange={(e)=>{
-                      setDraftUser(
-                        u => ({
-                          ...u, user_name : e.target.value
-                        })
-                      )
+                    onChange={(e) => {
+                      setDraftUser((u) => ({
+                        ...u,
+                        user_name: e.target.value,
+                      }));
                     }}
                   />
                 </div>
@@ -203,12 +239,11 @@ function ProfilePage() {
                     type="text"
                     class="rounded-xl border-black border-1 px-2"
                     value={userProfile()?.user_phone}
-                    onChange={(e)=>{
-                      setDraftUser(
-                        u => ({
-                          ...u, user_phone : e.target.value
-                        })
-                      )
+                    onChange={(e) => {
+                      setDraftUser((u) => ({
+                        ...u,
+                        user_phone: e.target.value,
+                      }));
                     }}
                   />
                 </div>
@@ -238,9 +273,10 @@ function ProfilePage() {
                 <p> : {userProfile().user_name}</p>
 
                 <p>Phone Number</p>
-                <p
-                  class={userProfile().user_phone? '' : 'text-gray-400'}
-                > : {userProfile().user_phone ? userProfile().user_phone : "-" }</p>
+                <p class={userProfile().user_phone ? "" : "text-gray-400"}>
+                  {" "}
+                  : {userProfile().user_phone ? userProfile().user_phone : "-"}
+                </p>
 
                 <p>Email</p>
                 <p> : {userProfile().user_email}</p>
@@ -268,24 +304,51 @@ function ProfilePage() {
           </div>
           <Switch>
             <Match when={addresses().length > 0}>
-              <For each={addresses()}>{(address, _) => <AddressCard {...address} />}</For>
-
+              <For each={addresses()}>
+                {(address, idx) => (
+                  <AddressCard
+                    address={address}
+                    onSave={({
+                      address_id,
+                      address_name,
+                      address_label,
+                      subdistrict_id,
+                    }) => {
+                      console.log(address_id);
+                      console.log(address_name);
+                      console.log(address_label);
+                      console.log(subdistrict_id);
+                      console.log(idx());
+                      const newAddresses = [...addresses()];
+                      console.log(newAddresses);
+                      newAddresses[idx()] = {
+                        addressId: address_id,
+                        addressLabel: address_label,
+                        address: address_name,
+                        selectedSubDistrict: subdistrict_id,
+                      };
+                      console.log(newAddresses);
+                      setAddresses(newAddresses);
+                      console.log(addresses());
+                    }}
+                  />
+                )}
+              </For>
             </Match>
-            <Match when={addresses.length === 0}>
-              <div class="flex justify-center"> 
-                <p
-                class="text-gray-400"
-                > You dont have any address set up! </p>
+            <Match when={addresses().length === 0}>
+              <div class="flex justify-center">
+                <p class="text-gray-400"> You dont have any address set up! </p>
                 <p>&nbsp</p>
                 <p
-                
-                class="text-sky-400 hover:cursor-pointer font-medium"
-                onclick={() => {
-                  flipIsCreatingAddress();
-                  setIsAddAddress(true);
-                }}
-                > Lets add one</p>
-
+                  class="text-sky-400 hover:cursor-pointer font-medium"
+                  onclick={() => {
+                    flipIsCreatingAddress();
+                    setIsAddAddress(true);
+                  }}
+                >
+                  {" "}
+                  Lets add one
+                </p>
               </div>
             </Match>
           </Switch>
@@ -296,30 +359,40 @@ function ProfilePage() {
         isCreatingAddress={isCreatingAddress()}
         isOpen={isAddAddress()}
         title={"Add Address"}
-        districtsOptions={districtsOptions()}
-        subDistrictsOptions={subDistrictsOptions()}
-
-        defaultDistrict={districtsOptions()[0]}
-        defaultSubDistrict={subDistrictsOptions()[0]}
-        
+        // districtsOptions={districtsOptions()}
+        // subDistrictsOptions={subDistrictsOptions()}
+        defaultDistrict={districts[0]}
+        defaultSubDistrict={subdistricts[0]}
         onClose={() => {
           isCreatingAddress(false);
           setIsAddAddress(false);
         }}
-        onSave={(addressLabel, address, selectedDistrict, selectedSubDistrict) => {
-
-          console.log(" address modal : "+addressLabel, address, selectedDistrict, selectedSubDistrict);
+        onSave={(
+          addressLabel,
+          address,
+          selectedDistrict,
+          selectedSubDistrict,
+          handleRefreshSelected
+        ) => {
+          console.log(
+            " address modal : " + addressLabel,
+            address,
+            selectedDistrict,
+            selectedSubDistrict
+          );
+          console.log(selectedDistrict);
+          console.log(selectedSubDistrict);
 
           handleNewAddress({
-            address_label : addressLabel,
-            address_name : address,
-            // district : selectedDistrict,
-            subdistrict : selectedSubDistrict,
-          })
+            address_label: addressLabel,
+            address_name: address,
+            subdistrict_id: selectedSubDistrict.subdistrict_id,
+          });
+
+          handleRefreshSelected();
 
           isCreatingAddress(false);
           setIsAddAddress(false);
-
         }}
       />
 

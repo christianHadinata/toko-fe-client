@@ -44,7 +44,7 @@ function ProfilePage() {
       const token = localStorage.getItem("token");
       const id = jwtDecode(token).user_id;
 
-      const response = await fetch(`http://localhost:5000/api/v1/users/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/v1/users/`, {
         method: "get",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -95,7 +95,7 @@ function ProfilePage() {
 
       const body = () => draftUser();
 
-      const response = await fetch(`http://localhost:5000/api/v1/users/${id}/updateuser`, {
+      const response = await fetch(`http://localhost:5000/api/v1/users/updateuser`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -253,24 +253,7 @@ function ProfilePage() {
                 </div>
 
                 <p>Email</p>
-                <div>
-                  <span class="mr-1">:</span>
-                  <input
-                    type="text"
-                    class="rounded-xl border-black border-1 px-2"
-                    value={userProfile().user_email}
-
-                    // Jangan bisa update email aja kah?
-
-                    // onChange={(e)=>{
-                    //   setDraftUser(
-                    //     u => ({
-                    //       ...u, user_phone : e.target.value
-                    //     })
-                    //   )
-                    // }}
-                  />
-                </div>
+                <p> : {userProfile().user_email}</p>
               </Match>
               <Match when={!activeEditProfile()}>
                 <p>Username</p>

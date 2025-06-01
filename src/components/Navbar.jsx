@@ -31,12 +31,12 @@ export default function Navbar(props) {
           </A>
           <div class="flex items-center gap-x-6">
             <div class="group relative flex gap-2 items-center">
-              <h3 class="cursor-pointer">Kategori</h3>
+              <h3 class="cursor-pointer">Category</h3>
               <img
                 src={"/assets/icon/iconmonstr-angel-down-thin.svg"}
                 class="w-2 h-2"
               />
-              <ul class="absolute -bottom-[0.5rem] translate-y-full right-0 group-hover:opacity-100 transition-opacity opacity-0 bg-white rounded-md shadow-lg border-[1px] border-gray-200 p-2">
+              <ul class="absolute bottom-0 translate-y-full right-0 group-hover:opacity-100 group-hover:visible invisible transition-opacity opacity-0 bg-white rounded-md shadow-lg border-[1px] border-gray-200 p-2">
                 <For each={categories}>
                   {(item) => (
                     <li class=" hover:bg-slate-100 rounded-md">

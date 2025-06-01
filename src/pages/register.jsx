@@ -1,9 +1,57 @@
-import { A } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import { createEffect, createSignal } from "solid-js";
 
 function Register() {
   const [isVisible, setIsVisible] = createSignal(false);
   const toggleVisibility = () => setIsVisible(!isVisible());
+
+  const [username, setUsername] = createSignal('');
+  const [password, setPassword] = createSignal('');
+  const [email, setEmail] = createSignal('');
+
+  const navigate = useNavigate();
+
+  function handleUsername(event){
+    setUsername(event.target.value)
+  }
+  function handlePassword(event){
+    setPassword(event.target.value)
+  }
+
+  function handleEmail(event){
+    setEmail(event.target.value)
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/users/register',{
+        method : 'post',
+        headers : {
+          'Content-Type' : 'application/json',
+        },
+        body : JSON.stringify({
+          user_email : email(),
+          user_password : password(),
+          user_name : username()
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        navigate('/login');
+      } else {
+        alert("gagal")
+      }
+      
+    } catch (error) {
+      console.log(error);
+    }
+
+   
+  }
 
   return (
     <>
@@ -33,24 +81,25 @@ function Register() {
                 <label class="mb-1 text-gray-700 font-medium"> Username</label>
                 <input
                   type="text"
-                  value=""
-                  onChange={""}
+                  value={username()}
+                  onChange={handleUsername}
                   class="px-4 py-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
                   placeholder="Enter username"
                 />
                 <label class="mb-1 text-gray-700 font-medium"> Email</label>
                 <input
                   type="email"
-                  value=""
-                  onChange={""}
+                  value={email()}
+                  onChange={handleEmail}
                   class="px-4 py-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
                   placeholder="Enter email"
-                />
+                  />
                 <label class="mb-1 text-gray-700 font-medium"> Password</label>
                 <div class="relative w-full max-w-md">
                   <input
                     type={isVisible() ? "text" : "password"}
-                    value=""
+                    value={password()}
+                    onChange={handlePassword}
                     class="px-4 py-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base w-full"
                     placeholder="Enter password"
                   />
@@ -77,6 +126,7 @@ function Register() {
                 <button
                   class="mt-5 bg-sky-400 font-medium text-white rounded-md py-2 cursor-pointer hover:bg-sky-300"
                   type="submit"
+                  onClick={handleSubmit}
                 >
                   Register
                 </button>

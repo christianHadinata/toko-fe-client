@@ -1,60 +1,149 @@
-import { createSignal, Switch, Match } from "solid-js";
+import { createSignal, Switch, Match, onMount, createEffect } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import Line from "../components/Line";
 import AddressCard from "../components/AddressCard";
 import Modal from "../components/Modal";
 import Dropdown2 from "../components/Dropdown2.jsx";
 import AddressModal from "../components/AddressModal.jsx";
+// import districtSignal from "../stores/districtSignal.js";
+import { bumpUserVersion } from "../stores/userVersion.js";
+import { addressVersion, bumpAddressVersion } from "../stores/addressVersion";
+import { isCreatingAddress, flipIsCreatingAddress } from "../stores/creatingAddress";
+import { districtsOptions, subDistrictsOptions, setSubDistrictsOptions ,fetchDistrictsAndSubdistricts } from "../resources/districtAndSubdistrict";
+import { jwtDecode } from 'jwt-decode'
 
 function ProfilePage() {
   const navigate = useNavigate();
-  const [userProfile, setUserProfile] = createSignal({
-    username: "Michael Scofield",
-    phone_number: "08123456789",
-    email: "michaelscofield@gmail.com",
-  });
+  const [userProfile, setUserProfile] = createSignal({});
 
   const [activeEditProfile, setActiveEditProfile] = createSignal(false);
+
   const [isAddAddress, setIsAddAddress] = createSignal(false);
-  const [addresses, setAddresses] = createSignal([
-    {
-      address_label: "Home",
-      address: "Jl. Bukit Jarian No 123",
-      districts: "Cidadap",
-      subdistricts: "Hegarmanah",
-    },
-    {
-      address_label: "Office",
-      address: "Jl. Jarian Bukit No 123",
-      districts: "Andir",
-      subdistricts: "Hegarmanah",
-    },
-    {
-      address_label: "Home",
-      address: "Jl. Bukit Jarian No 123",
-      districts: "Cidadap",
-      subdistricts: "Hegarmanah",
-    },
-  ]);
 
-  const user = {
-    username: "Michael Scofield",
-    phone_number: "08123456789",
-    email: "michaelscofield@gmail.com",
-  };
+  const [addresses, setAddresses] = createSignal([]);
 
-  const [districtsOptions, setDistrictsOptions] = createSignal([
-    { label: "Cidadap", value: "Cidadap" },
-    { label: "Andir", value: "Andir" },
-    { label: "Antapani", value: "Antapani" },
-  ]);
-  const [subDistrictsOptions, setSubDistrictsOptions] = createSignal([
-    { label: "Hegarmanah", value: "Hegarmanah" },
-    { label: "Caringin", value: "Caringin" },
-    { label: "Cijerah", value: "Cijerah" },
-  ]);
+  // Seandaikan nanti mau implementasi cancel buat yang edit user profile nya
+  const [ draftUser, setDraftUser ] = createSignal({});
 
-  //   setUserProfile(user);
+  // Buat data dari user untuk profile 
+  onMount(()=>{
+      fetchData();
+  });
+
+  // Buat cek perubahan addresses yang dimiliki sama user (nambah / edit)
+  createEffect(()=> {
+    addressVersion();
+    fetchAddresses();
+  });
+
+  const fetchData = async () => {
+    try {
+        // const id = signalId()
+        const token = localStorage.getItem("token");
+        const id = jwtDecode(token).user_id;
+
+        const response = await fetch(`http://localhost:5000/api/v1/users/${id}`,{
+          method : 'get',
+          headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+        });
+        
+        const data = await response.json();
+        setUserProfile(data);            
+
+        setDraftUser(data);
+      } catch (error) {
+        console.log(error)
+      }
+  }
+
+  const fetchAddresses = async () => {
+    try {
+        // const id = signalId()
+        const token = localStorage.getItem("token");
+        const id = jwtDecode(token).user_id;
+        console.log(" awal fetch")
+        const response = await fetch(`http://localhost:5000/api/v1/users/addresses`,{
+          method : 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+        });
+        console.log(" selesai fetch")
+        
+        const data = await response.json();
+        console.log(data)
+
+        if (data.success){
+          setAddresses(data.addresses)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+  }
+
+  const handleSaveProfile = async () => {      
+    try {
+        // const id = signalId()
+        const token = localStorage.getItem("token");
+        const id = jwtDecode(token).user_id;
+
+        const body = () => draftUser();
+
+        const response = await fetch(`http://localhost:5000/api/v1/users/${id}/updateuser`,{
+          method : 'PATCH',
+          headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          },
+          body : JSON.stringify(body())
+        });
+        
+        const data = await response.json();
+
+        if (data.success){
+          setUserProfile({ ...draftUser() });
+          bumpUserVersion();
+        }
+
+      } catch (error) {
+        console.log(error)
+      }
+  }
+
+  const handleNewAddress = async ( {address_label, address_name, subdistrict} ) => {
+    try {
+        const token = localStorage.getItem("token");
+        console.log(subdistrict)
+        const body = {
+          address_label, 
+          address_name, 
+          subdistrict_id : subdistrict
+        };
+
+        console.log(body)
+        const response = await fetch(`http://localhost:5000/api/v1/users/newaddress`,{
+          method : 'POST',
+          headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          },
+          body : JSON.stringify(body)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          bumpAddressVersion();
+        }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  
 
   return (
     <>
@@ -69,6 +158,7 @@ function ProfilePage() {
                   class="text-black rounded-2xl px-4 py-1 border-1 border-black hover:bg-gray-100 hover:cursor-pointer"
                   onClick={() => {
                     setActiveEditProfile(false);
+                    handleSaveProfile();
                   }}
                 >
                   Save
@@ -95,7 +185,14 @@ function ProfilePage() {
                   <input
                     type="text"
                     class="rounded-xl border-black border-1 px-2"
-                    value={userProfile().username}
+                    value={userProfile()?.user_name}
+                    onChange={(e)=>{
+                      setDraftUser(
+                        u => ({
+                          ...u, user_name : e.target.value
+                        })
+                      )
+                    }}
                   />
                 </div>
 
@@ -105,7 +202,14 @@ function ProfilePage() {
                   <input
                     type="text"
                     class="rounded-xl border-black border-1 px-2"
-                    value={userProfile().phone_number}
+                    value={userProfile()?.user_phone}
+                    onChange={(e)=>{
+                      setDraftUser(
+                        u => ({
+                          ...u, user_phone : e.target.value
+                        })
+                      )
+                    }}
                   />
                 </div>
 
@@ -115,19 +219,31 @@ function ProfilePage() {
                   <input
                     type="text"
                     class="rounded-xl border-black border-1 px-2"
-                    value={userProfile().email}
+                    value={userProfile().user_email}
+
+                    // Jangan bisa update email aja kah?
+
+                    // onChange={(e)=>{
+                    //   setDraftUser(
+                    //     u => ({
+                    //       ...u, user_phone : e.target.value
+                    //     })
+                    //   )
+                    // }}
                   />
                 </div>
               </Match>
               <Match when={!activeEditProfile()}>
                 <p>Username</p>
-                <p> : {userProfile().username}</p>
+                <p> : {userProfile().user_name}</p>
 
                 <p>Phone Number</p>
-                <p> : {userProfile().phone_number}</p>
+                <p
+                  class={userProfile().user_phone? '' : 'text-gray-400'}
+                > : {userProfile().user_phone ? userProfile().user_phone : "-" }</p>
 
                 <p>Email</p>
-                <p> : {userProfile().email}</p>
+                <p> : {userProfile().user_email}</p>
               </Match>
             </Switch>
 
@@ -143,25 +259,67 @@ function ProfilePage() {
             <button
               class="text-black rounded-2xl px-4 py-1 border-1 border-black hover:bg-gray-100 hover:cursor-pointer"
               onclick={() => {
+                flipIsCreatingAddress();
                 setIsAddAddress(true);
               }}
             >
               + Add address
             </button>
           </div>
-          <For each={addresses()}>{(address, _) => <AddressCard {...address} />}</For>
+          <Switch>
+            <Match when={addresses().length > 0}>
+              <For each={addresses()}>{(address, _) => <AddressCard {...address} />}</For>
+
+            </Match>
+            <Match when={addresses.length === 0}>
+              <div class="flex justify-center"> 
+                <p
+                class="text-gray-400"
+                > You dont have any address set up! </p>
+                <p>&nbsp</p>
+                <p
+                
+                class="text-sky-400 hover:cursor-pointer font-medium"
+                onclick={() => {
+                  flipIsCreatingAddress();
+                  setIsAddAddress(true);
+                }}
+                > Lets add one</p>
+
+              </div>
+            </Match>
+          </Switch>
         </div>
       </div>
       {/* isOpen, title, onClose, defaultAddressLabel, defaultAddress, defaultDistrict, defaultSubDistrict, onSave */}
       <AddressModal
+        isCreatingAddress={isCreatingAddress()}
         isOpen={isAddAddress()}
         title={"Add Address"}
+        districtsOptions={districtsOptions()}
+        subDistrictsOptions={subDistrictsOptions()}
+
+        defaultDistrict={districtsOptions()[0]}
+        defaultSubDistrict={subDistrictsOptions()[0]}
+        
         onClose={() => {
+          isCreatingAddress(false);
           setIsAddAddress(false);
         }}
         onSave={(addressLabel, address, selectedDistrict, selectedSubDistrict) => {
-          console.log(addressLabel, address, selectedDistrict, selectedSubDistrict);
+
+          console.log(" address modal : "+addressLabel, address, selectedDistrict, selectedSubDistrict);
+
+          handleNewAddress({
+            address_label : addressLabel,
+            address_name : address,
+            // district : selectedDistrict,
+            subdistrict : selectedSubDistrict,
+          })
+
+          isCreatingAddress(false);
           setIsAddAddress(false);
+
         }}
       />
 

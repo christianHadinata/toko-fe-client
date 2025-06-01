@@ -1,15 +1,56 @@
 import { createEffect, createSignal } from "solid-js";
 import { A, useNavigate } from "@solidjs/router";
 
+
 function Login() {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = createSignal(false);
   const toggleVisibility = () => setIsVisible(!isVisible());
 
-  const handleLogin = (e) => {
+  const [password, setPassword] = createSignal('');
+  const [email, setEmail] = createSignal('');
+
+  function handlePassword(event){
+    setPassword(event.target.value)
+  }
+
+  function handleEmail(event){
+    setEmail(event.target.value)
+  }
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    localStorage.setItem("token", "dummy-jwt-token");
-    navigate("/");
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/users/login',{
+        method : 'post',
+        headers : {
+          'Content-Type' : 'application/json',
+        },
+        body : JSON.stringify({
+          user_email : email(),
+          user_password : password(),
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        localStorage.setItem("token", data.token);
+
+        // const decoded = jwtDecode(data.token);
+        // setUserId(decoded.user_id)
+
+
+        navigate('/');
+      } else {
+        alert("gagal")
+      }
+
+   
+    } catch (error) {
+        console.log(error)
+    }
+
     // location.reload();
   };
 
@@ -30,8 +71,8 @@ function Login() {
                 <label class="mb-1 text-gray-700 font-medium"> Email</label>
                 <input
                   type="email"
-                  value=""
-                  onChange={""}
+                  value={email()}
+                  onChange={handleEmail}
                   class="px-4 py-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
                   placeholder="Enter your email"
                 />
@@ -39,7 +80,8 @@ function Login() {
                 <div class="relative w-full max-w-md">
                   <input
                     type={isVisible() ? "text" : "password"}
-                    value=""
+                    value={password()}
+                    onChange={handlePassword}
                     class="px-4 py-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base w-full"
                     placeholder="Enter your password"
                   />

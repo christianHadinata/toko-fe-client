@@ -1,11 +1,47 @@
 import { A, useNavigate } from "@solidjs/router";
+import { createEffect, createSignal, onMount } from "solid-js";
+import { jwtDecode } from 'jwt-decode';
+import  { userVersion } from "../stores/userVersion";
 
 export default function ProfileDropdown() {
   const navigate = useNavigate();
+  const [user, setUser ] = createSignal({});
+
+
   function handleLogout() {
     localStorage.removeItem("token");
     navigate("/login");
   }
+
+  createEffect(()=>{
+    // fetchUser();
+    userVersion();
+
+    fetchUser();
+  });
+
+  const fetchUser = async () => {
+    try {
+          // const id = signalId()
+          const token = localStorage.getItem("token");
+          const id = jwtDecode(token).user_id;
+
+          const response = await fetch(`http://localhost:5000/api/v1/users/${id}`,{
+            method : 'get',
+            headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+          });
+          
+          const data = await response.json();
+          setUser(data);
+
+        } catch (error) {
+          console.log(error)
+        }
+  }
+
   return (
     <div class="relative group">
       <div class="rounded-md p-2 hover:bg-gray-100 cursor-pointer">
@@ -19,15 +55,15 @@ export default function ProfileDropdown() {
 
       <div class="absolute right-0 w-64 rounded-lg border border-gray-200 bg-white p-4 shadow-lg z-50 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-opacity duration-200">
         <div class="mb-2 p-2">
-          <p class="font-semibold text-lg">Michael Scofield</p>
-          <p class="text-sm text-gray-600 pb-2">michaelscofield@gmail.com</p>
+          <p class="font-semibold text-lg">{user()?.user_name ? user().user_name : ""}</p>
+          <p class="text-sm text-gray-600 pb-2">{user()?.user_email ? user().user_email : ""}</p>
           <div class="flex items-center text-sm mt-1 text-gray-600">
             <img
               src="/assets/icon/phone.png"
               alt=""
               class="w-5 h-5"
             />
-            <span class="ml-2">: 08123456789</span>
+            <span class="ml-2">: {user()?.user_phone ? user().user_phone : "Not Available"}</span>
           </div>
         </div>
         <hr class="my-2" />

@@ -3,7 +3,8 @@ import Modal from "./Modal.jsx";
 import Dropdown2 from "./Dropdown2.jsx";
 import districtSignal from "../stores/districtSignal.js";
 import { flipIsCreatingAddress } from "../stores/creatingAddress.js";
-
+import { districts } from "../data/districts.js";
+import { subdistricts } from "../data/subdistricts.js";
 
 // isOpen, title, onClose, defaultAddressLabel, defaultAddress, defaultDistrict, defaultSubDistrict, onSave
 export default function AddressModal(props) {
@@ -11,26 +12,28 @@ export default function AddressModal(props) {
   const [address, setAddress] = createSignal(props.defaultAddress || "");
   const [_, setDistrictId] = districtSignal;
 
-  // const [districtsOptions, setDistrictsOptions] = createSignal(() => props.districtsOpt);
-  // const [subDistrictsOptions, setSubDistrictsOptions] = createSignal(()=>props.subDistrictsOpt);
-  
-  // console.log(props.isEdit)
-
-  // console.log(props.districtsOptions[0])
-  // console.log(props.subDistrictsOptions[0])
-
   const [selectedDistrict, setSelectedDistrict] = createSignal(props.defaultDistrict);
   const [selectedSubDistrict, setSelectedSubDistrict] = createSignal(props.defaultSubDistrict);
-  
-  console.log(selectedDistrict())
-  console.log(selectedSubDistrict())
 
+  const [filteredSubDistrict, setFilteredSubDistrict] = createSignal();
+
+  createEffect(() => {
+    setFilteredSubDistrict(subdistricts.filter((currSubDistricts) => currSubDistricts.district_id === selectedDistrict().district_id));
+    setSelectedSubDistrict(filteredSubDistrict()[0]);
+  });
+
+  const handleRefreshSelected = () => {
+    setSelectedDistrict(props.defaultDistrict);
+    setSelectedSubDistrict(props.defaultSubDistrict);
+  };
 
   return (
     <>
       <Modal
         open={props.isOpen}
         onClose={() => {
+          setSelectedDistrict(props.defaultDistrict);
+          setSelectedSubDistrict(props.defaultSubDistrict);
           props.onClose();
         }}
       >
@@ -78,7 +81,7 @@ export default function AddressModal(props) {
             <div class="flex">
               <span class="mr-2">:</span>
               <Dropdown2
-                items={props.districtsOptions}
+                items={districts}
                 value={selectedDistrict()}
                 // defaultValue={props.defaultDistrict}
                 onChange={(selectedValue) => {
@@ -92,12 +95,11 @@ export default function AddressModal(props) {
             <div class="flex items-center">
               <span class="mr-2">:</span>
               <Dropdown2
-                items={props.subDistrictsOptions}
+                items={filteredSubDistrict()}
                 value={selectedSubDistrict()}
                 onChange={(val) => {
                   console.log(val);
                   setSelectedSubDistrict(val);
-                  // console.log(selectedSubDistrict());
                 }}
               />
             </div>
@@ -109,7 +111,7 @@ export default function AddressModal(props) {
                 flipIsCreatingAddress();
                 console.log(addressLabel(), address(), selectedDistrict(), selectedSubDistrict());
 
-                props.onSave(addressLabel(), address(), selectedDistrict(), selectedSubDistrict());
+                props.onSave(addressLabel(), address(), selectedDistrict(), selectedSubDistrict(), handleRefreshSelected);
               }}
             >
               Save

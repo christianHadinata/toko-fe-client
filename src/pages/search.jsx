@@ -347,6 +347,12 @@ export default function Search() {
         currentPage={currentPage()}
         pageHandler={pageHandler}
       />
+
+      <Pagination
+        totalPages={30}
+        currentPage={currentPage()}
+        pageHandler={pageHandler}
+      />
     </>
   );
 }

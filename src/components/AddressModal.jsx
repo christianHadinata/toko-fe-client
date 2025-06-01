@@ -8,28 +8,18 @@ import { subdistricts } from "../data/subdistricts.js";
 
 // isOpen, title, onClose, defaultAddressLabel, defaultAddress, defaultDistrict, defaultSubDistrict, onSave
 export default function AddressModal(props) {
-  const [addressLabel, setAddressLabel] = createSignal(
-    props.defaultAddressLabel || ""
-  );
+  const [addressLabel, setAddressLabel] = createSignal(props.defaultAddressLabel || "");
   const [address, setAddress] = createSignal(props.defaultAddress || "");
   const [_, setDistrictId] = districtSignal;
 
-  const [selectedDistrict, setSelectedDistrict] = createSignal(
-    props.defaultDistrict
-  );
-  const [selectedSubDistrict, setSelectedSubDistrict] = createSignal(
-    props.defaultSubDistrict
-  );
+  const [selectedDistrict, setSelectedDistrict] = createSignal(props.defaultDistrict);
+  const [selectedSubDistrict, setSelectedSubDistrict] = createSignal(props.defaultSubDistrict);
 
   const [filteredSubDistrict, setFilteredSubDistrict] = createSignal();
 
   createEffect(() => {
-    setFilteredSubDistrict(
-      subdistricts.filter(
-        (currSubDistricts) =>
-          currSubDistricts.district_id === selectedDistrict().district_id
-      )
-    );
+    setFilteredSubDistrict(subdistricts.filter((currSubDistricts) => currSubDistricts.district_id === selectedDistrict().district_id));
+    setSelectedSubDistrict(filteredSubDistrict()[0]);
   });
 
   const handleRefreshSelected = () => {
@@ -119,20 +109,9 @@ export default function AddressModal(props) {
               class="rounded-2xl border-1 px-3 py-1 hover:cursor-pointer hover:bg-slate-100"
               onClick={() => {
                 flipIsCreatingAddress();
-                console.log(
-                  addressLabel(),
-                  address(),
-                  selectedDistrict(),
-                  selectedSubDistrict()
-                );
+                console.log(addressLabel(), address(), selectedDistrict(), selectedSubDistrict());
 
-                props.onSave(
-                  addressLabel(),
-                  address(),
-                  selectedDistrict(),
-                  selectedSubDistrict(),
-                  handleRefreshSelected
-                );
+                props.onSave(addressLabel(), address(), selectedDistrict(), selectedSubDistrict(), handleRefreshSelected);
               }}
             >
               Save

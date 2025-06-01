@@ -8,10 +8,7 @@ import AddressModal from "../components/AddressModal.jsx";
 // import districtSignal from "../stores/districtSignal.js";
 import { bumpUserVersion } from "../stores/userVersion.js";
 import { addressVersion, bumpAddressVersion } from "../stores/addressVersion";
-import {
-  isCreatingAddress,
-  flipIsCreatingAddress,
-} from "../stores/creatingAddress";
+import { isCreatingAddress, flipIsCreatingAddress } from "../stores/creatingAddress";
 import { jwtDecode } from "jwt-decode";
 import { districts } from "../data/districts";
 import { subdistricts } from "../data/subdistricts";
@@ -70,16 +67,13 @@ function ProfilePage() {
       const token = localStorage.getItem("token");
       const id = jwtDecode(token).user_id;
       console.log(" awal fetch");
-      const response = await fetch(
-        `http://localhost:5000/api/v1/users/addresses`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:5000/api/v1/users/addresses`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       console.log(" selesai fetch");
 
       const data = await response.json();
@@ -101,17 +95,14 @@ function ProfilePage() {
 
       const body = () => draftUser();
 
-      const response = await fetch(
-        `http://localhost:5000/api/v1/users/${id}/updateuser`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body()),
-        }
-      );
+      const response = await fetch(`http://localhost:5000/api/v1/users/${id}/updateuser`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body()),
+      });
 
       const data = await response.json();
 
@@ -124,11 +115,7 @@ function ProfilePage() {
     }
   };
 
-  const handleNewAddress = async ({
-    address_label,
-    address_name,
-    subdistrict_id,
-  }) => {
+  const handleNewAddress = async ({ address_label, address_name, subdistrict_id }) => {
     try {
       const token = localStorage.getItem("token");
       console.log(subdistrict_id);
@@ -139,23 +126,40 @@ function ProfilePage() {
       };
 
       console.log(body);
-      const response = await fetch(
-        `http://localhost:5000/api/v1/users/newaddress`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        }
-      );
+      const response = await fetch(`http://localhost:5000/api/v1/users/newaddress`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
 
       const data = await response.json();
 
-      if (data.success) {
-        bumpAddressVersion();
-      }
+      // if (data.success) {
+      //   bumpAddressVersion();
+      // }
+
+      // pseudo code
+      const addedAddressId = data.address_id;
+      const addedAddressSub = subdistricts.find((s) => s.subdistrict_id == subdistrict_id);
+      const addedAdressDis = districts.find((d) => d.district_id == addedAddressSub.district_id);
+
+      const newAddresses = [
+        {
+          address_id: addedAddressId,
+          address_name,
+          address_label,
+          district_id: addedAdressDis.district_id,
+          district_name: addedAdressDis.district_name,
+          subdistrict_id: addedAddressSub.subdistrict_id,
+          subdistrict_name: addedAddressSub.subdistrict_name,
+        },
+        ...addresses(),
+      ];
+
+      setAddresses(newAddresses);
     } catch (error) {
       console.log(error);
     }
@@ -273,10 +277,7 @@ function ProfilePage() {
                 <p> : {userProfile().user_name}</p>
 
                 <p>Phone Number</p>
-                <p class={userProfile().user_phone ? "" : "text-gray-400"}>
-                  {" "}
-                  : {userProfile().user_phone ? userProfile().user_phone : "-"}
-                </p>
+                <p class={userProfile().user_phone ? "" : "text-gray-400"}> : {userProfile().user_phone ? userProfile().user_phone : "-"}</p>
 
                 <p>Email</p>
                 <p> : {userProfile().user_email}</p>
@@ -305,28 +306,36 @@ function ProfilePage() {
           <Switch>
             <Match when={addresses().length > 0}>
               <For each={addresses()}>
-                {(address, idx) => (
+                {(add, idx) => (
                   <AddressCard
-                    address={address}
-                    onSave={({
-                      address_id,
-                      address_name,
-                      address_label,
-                      subdistrict_id,
-                    }) => {
-                      console.log(address_id);
-                      console.log(address_name);
-                      console.log(address_label);
-                      console.log(subdistrict_id);
-                      console.log(idx());
+                    address={add}
+                    onSave={({ address_id, address_name, address_label, subdistrict_id }) => {
+                      // console.log(address_id);
+                      // console.log(address_name);
+                      // console.log(address_label);
+                      // console.log(subdistrict_id);
+                      // console.log(idx());
                       const newAddresses = [...addresses()];
                       console.log(newAddresses);
+
+                      const newSubDistrict = subdistricts.find((s) => s.subdistrict_id == subdistrict_id);
+
                       newAddresses[idx()] = {
+                        ...newAddresses[idx()],
+                        address_label: address_label,
+                        address_name: address_name,
+                        subdistrict_id: subdistrict_id,
+                        subdistrict_name: newSubDistrict.subdistrict_name,
+                        district_id: newSubDistrict.district_id,
+                        district_name: districts.find((d) => d.district_id == newSubDistrict.district_id).district_name,
+                      };
+
+                      console.log("lololol", {
                         addressId: address_id,
                         addressLabel: address_label,
                         address: address_name,
-                        selectedSubDistrict: subdistrict_id,
-                      };
+                        selectedSubDistrict: subdistricts.find((s) => s.district_id == subdistrict_id),
+                      });
                       console.log(newAddresses);
                       setAddresses(newAddresses);
                       console.log(addresses());
@@ -367,19 +376,8 @@ function ProfilePage() {
           isCreatingAddress(false);
           setIsAddAddress(false);
         }}
-        onSave={(
-          addressLabel,
-          address,
-          selectedDistrict,
-          selectedSubDistrict,
-          handleRefreshSelected
-        ) => {
-          console.log(
-            " address modal : " + addressLabel,
-            address,
-            selectedDistrict,
-            selectedSubDistrict
-          );
+        onSave={(addressLabel, address, selectedDistrict, selectedSubDistrict, handleRefreshSelected) => {
+          console.log(" address modal : " + addressLabel, address, selectedDistrict, selectedSubDistrict);
           console.log(selectedDistrict);
           console.log(selectedSubDistrict);
 

@@ -17,15 +17,14 @@ export default function AddressCard(props) {
   //   district_id: props.district_id,
   // };
 
+  createEffect(() => {
+    console.log("from effect", props.address);
+  });
+
   const [activeEditAdress, setActiveEditAdress] = createSignal(false);
   const [draftAddress, setDraftAddress] = createSignal({});
 
-  const handleSaveAddress = async ({
-    addressId,
-    addressLabel,
-    address,
-    selectedSubDistrict,
-  }) => {
+  const handleSaveAddress = async ({ addressId, addressLabel, address, selectedSubDistrict }) => {
     try {
       // const id = signalId()
       const token = localStorage.getItem("token");
@@ -37,20 +36,18 @@ export default function AddressCard(props) {
         subdistrict_id: selectedSubDistrict.subdistrict_id,
       };
 
-      const response = await fetch(
-        `http://localhost:5000/api/v1/users/updateaddress`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newAddress),
-        }
-      );
+      const response = await fetch(`http://localhost:5000/api/v1/users/updateaddress`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newAddress),
+      });
 
       const data = await response.json();
-      console.log(data);
+
+      console.log(newAddress);
 
       props.onSave(newAddress);
     } catch (error) {
@@ -68,6 +65,9 @@ export default function AddressCard(props) {
           <p>{props.address.subdistrict_name}</p>
         </div>
       </div>
+
+      {/* <div>{JSON.stringify(props.address)}</div>
+      <div>{JSON.stringify(props.address.district_name)}</div> */}
 
       <button
         class="rounded-2xl border-1 px-2 py-1 hover:cursor-pointer hover:bg-slate-100"
@@ -107,24 +107,14 @@ export default function AddressCard(props) {
           subdistrict_name: props.address.subdistrict_name,
           district_id: props.address.district_id,
         }}
-        onSave={(
-          addressLabel,
-          address,
-          selectedDistrict,
-          selectedSubDistrict
-        ) => {
+        onSave={(addressLabel, address, selectedDistrict, selectedSubDistrict) => {
           handleSaveAddress({
             addressId: props.address.address_id,
             addressLabel,
             address,
             selectedSubDistrict,
           });
-          console.log(
-            addressLabel,
-            address,
-            selectedDistrict,
-            selectedSubDistrict
-          );
+          console.log(addressLabel, address, selectedDistrict, selectedSubDistrict);
           setActiveEditAdress(false);
         }}
       />

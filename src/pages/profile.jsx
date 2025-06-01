@@ -8,14 +8,20 @@ import AddressModal from "../components/AddressModal.jsx";
 // import districtSignal from "../stores/districtSignal.js";
 import { bumpUserVersion } from "../stores/userVersion.js";
 import { addressVersion, bumpAddressVersion } from "../stores/addressVersion";
-import { isCreatingAddress, flipIsCreatingAddress } from "../stores/creatingAddress";
+import {
+  isCreatingAddress,
+  flipIsCreatingAddress,
+} from "../stores/creatingAddress";
 import { jwtDecode } from "jwt-decode";
 import { districts } from "../data/districts";
 import { subdistricts } from "../data/subdistricts";
+import profileSignal from "../stores/profileSignal";
 
 function ProfilePage() {
   const navigate = useNavigate();
-  const [userProfile, setUserProfile] = createSignal({});
+  const [userProfile, setUserProfile] = profileSignal;
+  const [username, setUsername] = createSignal("");
+  const [userPhone, setUserPhone] = createSignal("");
 
   const [activeEditProfile, setActiveEditProfile] = createSignal(false);
 
@@ -24,12 +30,15 @@ function ProfilePage() {
   const [addresses, setAddresses] = createSignal([]);
 
   // Seandaikan nanti mau implementasi cancel buat yang edit user profile nya
-  const [draftUser, setDraftUser] = createSignal({});
+  // const [draftUser, setDraftUser] = createSignal({});
 
   // Buat data dari user untuk profile
-  onMount(() => {
-    fetchData();
+  createEffect(() => {
+    // fetchData();
     fetchAddresses();
+    console.log(userProfile());
+    setUsername(userProfile().user_name);
+    setUserPhone(userProfile().user_phone);
   });
 
   // Buat cek perubahan addresses yang dimiliki sama user (nambah / edit)
@@ -38,11 +47,15 @@ function ProfilePage() {
   //   fetchAddresses();
   // });
 
+  // createEffect(() => {
+  //   console.log(username());
+  //   console.log(userPhone());
+  // });
+
   const fetchData = async () => {
     try {
       // const id = signalId()
       const token = localStorage.getItem("token");
-      const id = jwtDecode(token).user_id;
 
       const response = await fetch(`http://localhost:5000/api/v1/users/`, {
         method: "get",
@@ -53,9 +66,12 @@ function ProfilePage() {
       });
 
       const data = await response.json();
-      setUserProfile(data);
+      // setUserProfile(data);
+      setUsername(data.user_name);
+      setUserPhone(data.user_phone);
+      console.log(userProfile());
 
-      setDraftUser(data);
+      // setDraftUser(data);
     } catch (error) {
       console.log(error);
     }
@@ -67,13 +83,16 @@ function ProfilePage() {
       const token = localStorage.getItem("token");
       const id = jwtDecode(token).user_id;
       console.log(" awal fetch");
-      const response = await fetch(`http://localhost:5000/api/v1/users/addresses`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/v1/users/addresses`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       console.log(" selesai fetch");
 
       const data = await response.json();
@@ -91,31 +110,43 @@ function ProfilePage() {
     try {
       // const id = signalId()
       const token = localStorage.getItem("token");
-      const id = jwtDecode(token).user_id;
 
-      const body = () => draftUser();
+      const body = {
+        user_name: username(),
+        user_phone: userPhone(),
+      };
 
-      const response = await fetch(`http://localhost:5000/api/v1/users/updateuser`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body()),
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/v1/users/updateuser`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
 
       const data = await response.json();
 
       if (data.success) {
-        setUserProfile({ ...draftUser() });
-        bumpUserVersion();
+        setUserProfile((prev) => ({
+          ...prev,
+          user_name: username(),
+          user_phone: userPhone(),
+        }));
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleNewAddress = async ({ address_label, address_name, subdistrict_id }) => {
+  const handleNewAddress = async ({
+    address_label,
+    address_name,
+    subdistrict_id,
+  }) => {
     try {
       const token = localStorage.getItem("token");
       console.log(subdistrict_id);
@@ -126,14 +157,17 @@ function ProfilePage() {
       };
 
       console.log(body);
-      const response = await fetch(`http://localhost:5000/api/v1/users/newaddress`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/v1/users/newaddress`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
 
       const data = await response.json();
 
@@ -143,8 +177,12 @@ function ProfilePage() {
 
       // pseudo code
       const addedAddressId = data.address_id;
-      const addedAddressSub = subdistricts.find((s) => s.subdistrict_id == subdistrict_id);
-      const addedAdressDis = districts.find((d) => d.district_id == addedAddressSub.district_id);
+      const addedAddressSub = subdistricts.find(
+        (s) => s.subdistrict_id == subdistrict_id
+      );
+      const addedAdressDis = districts.find(
+        (d) => d.district_id == addedAddressSub.district_id
+      );
 
       const newAddresses = [
         {
@@ -195,15 +233,27 @@ function ProfilePage() {
 
             <Switch>
               <Match when={activeEditProfile()}>
-                <button
-                  class="text-black rounded-2xl px-4 py-1 border-1 border-black hover:bg-gray-100 hover:cursor-pointer"
-                  onClick={() => {
-                    setActiveEditProfile(false);
-                    handleSaveProfile();
-                  }}
-                >
-                  Save
-                </button>
+                <div>
+                  <button
+                    class="text-black rounded-2xl px-4 py-1 border-1 border-black hover:bg-gray-100 hover:cursor-pointer mr-4"
+                    onClick={() => {
+                      setUsername(userProfile().user_name);
+                      setUserPhone(userProfile().user_phone);
+                      setActiveEditProfile(false);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    class="text-black rounded-2xl px-4 py-1 border-1 border-black hover:bg-gray-100 hover:cursor-pointer"
+                    onClick={() => {
+                      setActiveEditProfile(false);
+                      handleSaveProfile();
+                    }}
+                  >
+                    Save
+                  </button>
+                </div>
               </Match>
               <Match when={!activeEditProfile()}>
                 <button
@@ -226,13 +276,8 @@ function ProfilePage() {
                   <input
                     type="text"
                     class="rounded-xl border-black border-1 px-2"
-                    value={userProfile()?.user_name}
-                    onChange={(e) => {
-                      setDraftUser((u) => ({
-                        ...u,
-                        user_name: e.target.value,
-                      }));
-                    }}
+                    value={username()}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
 
@@ -242,13 +287,8 @@ function ProfilePage() {
                   <input
                     type="text"
                     class="rounded-xl border-black border-1 px-2"
-                    value={userProfile()?.user_phone}
-                    onChange={(e) => {
-                      setDraftUser((u) => ({
-                        ...u,
-                        user_phone: e.target.value,
-                      }));
-                    }}
+                    value={userPhone()}
+                    onChange={(e) => setUserPhone(e.target.value)}
                   />
                 </div>
 
@@ -260,7 +300,10 @@ function ProfilePage() {
                 <p> : {userProfile().user_name}</p>
 
                 <p>Phone Number</p>
-                <p class={userProfile().user_phone ? "" : "text-gray-400"}> : {userProfile().user_phone ? userProfile().user_phone : "-"}</p>
+                <p class={userProfile().user_phone ? "" : "text-gray-400"}>
+                  {" "}
+                  : {userProfile().user_phone ? userProfile().user_phone : "-"}
+                </p>
 
                 <p>Email</p>
                 <p> : {userProfile().user_email}</p>
@@ -292,7 +335,12 @@ function ProfilePage() {
                 {(add, idx) => (
                   <AddressCard
                     address={add}
-                    onSave={({ address_id, address_name, address_label, subdistrict_id }) => {
+                    onSave={({
+                      address_id,
+                      address_name,
+                      address_label,
+                      subdistrict_id,
+                    }) => {
                       // console.log(address_id);
                       // console.log(address_name);
                       // console.log(address_label);
@@ -301,7 +349,9 @@ function ProfilePage() {
                       const newAddresses = [...addresses()];
                       console.log(newAddresses);
 
-                      const newSubDistrict = subdistricts.find((s) => s.subdistrict_id == subdistrict_id);
+                      const newSubDistrict = subdistricts.find(
+                        (s) => s.subdistrict_id == subdistrict_id
+                      );
 
                       newAddresses[idx()] = {
                         ...newAddresses[idx()],
@@ -310,14 +360,18 @@ function ProfilePage() {
                         subdistrict_id: subdistrict_id,
                         subdistrict_name: newSubDistrict.subdistrict_name,
                         district_id: newSubDistrict.district_id,
-                        district_name: districts.find((d) => d.district_id == newSubDistrict.district_id).district_name,
+                        district_name: districts.find(
+                          (d) => d.district_id == newSubDistrict.district_id
+                        ).district_name,
                       };
 
                       console.log("lololol", {
                         addressId: address_id,
                         addressLabel: address_label,
                         address: address_name,
-                        selectedSubDistrict: subdistricts.find((s) => s.district_id == subdistrict_id),
+                        selectedSubDistrict: subdistricts.find(
+                          (s) => s.district_id == subdistrict_id
+                        ),
                       });
                       console.log(newAddresses);
                       setAddresses(newAddresses);
@@ -359,8 +413,19 @@ function ProfilePage() {
           isCreatingAddress(false);
           setIsAddAddress(false);
         }}
-        onSave={(addressLabel, address, selectedDistrict, selectedSubDistrict, handleRefreshSelected) => {
-          console.log(" address modal : " + addressLabel, address, selectedDistrict, selectedSubDistrict);
+        onSave={(
+          addressLabel,
+          address,
+          selectedDistrict,
+          selectedSubDistrict,
+          handleRefreshSelected
+        ) => {
+          console.log(
+            " address modal : " + addressLabel,
+            address,
+            selectedDistrict,
+            selectedSubDistrict
+          );
           console.log(selectedDistrict);
           console.log(selectedSubDistrict);
 

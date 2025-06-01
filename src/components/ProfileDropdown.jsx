@@ -2,10 +2,11 @@ import { A, useNavigate } from "@solidjs/router";
 import { createEffect, createSignal, onMount } from "solid-js";
 import { jwtDecode } from "jwt-decode";
 import { userVersion } from "../stores/userVersion";
+import profileSignal from "../stores/profileSignal";
 
 export default function ProfileDropdown() {
   const navigate = useNavigate();
-  const [user, setUser] = createSignal({});
+  const [user, setUser] = profileSignal;
 
   function handleLogout() {
     localStorage.removeItem("token");
@@ -23,9 +24,8 @@ export default function ProfileDropdown() {
     try {
       // const id = signalId()
       const token = localStorage.getItem("token");
-      const id = jwtDecode(token).user_id;
 
-      const response = await fetch(`http://localhost:5000/api/v1/users/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/v1/users/`, {
         method: "get",
         headers: {
           Authorization: `Bearer ${token}`,

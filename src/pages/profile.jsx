@@ -29,9 +29,6 @@ function ProfilePage() {
 
   const [addresses, setAddresses] = createSignal([]);
 
-  // Seandaikan nanti mau implementasi cancel buat yang edit user profile nya
-  // const [draftUser, setDraftUser] = createSignal({});
-
   // Buat data dari user untuk profile
   createEffect(() => {
     // fetchData();
@@ -40,42 +37,6 @@ function ProfilePage() {
     setUsername(userProfile().user_name);
     setUserPhone(userProfile().user_phone);
   });
-
-  // Buat cek perubahan addresses yang dimiliki sama user (nambah / edit)
-  // createEffect(() => {
-  //   addressVersion();
-  //   fetchAddresses();
-  // });
-
-  // createEffect(() => {
-  //   console.log(username());
-  //   console.log(userPhone());
-  // });
-
-  const fetchData = async () => {
-    try {
-      // const id = signalId()
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(`http://localhost:5000/api/v1/users/`, {
-        method: "get",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-      // setUserProfile(data);
-      setUsername(data.user_name);
-      setUserPhone(data.user_phone);
-      console.log(userProfile());
-
-      // setDraftUser(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const fetchAddresses = async () => {
     try {

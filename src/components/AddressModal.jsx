@@ -4,7 +4,6 @@ import Dropdown2 from "./Dropdown2.jsx";
 import { districts } from "../data/districts.js";
 import { subdistricts } from "../data/subdistricts.js";
 
-// isOpen, title, onClose, defaultAddressLabel, defaultAddress, defaultDistrict, defaultSubDistrict, onSave
 export default function AddressModal(props) {
   const [label, setLabel] = createSignal("");
   const [address, setAddress] = createSignal("");

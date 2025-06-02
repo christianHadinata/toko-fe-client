@@ -1,31 +1,15 @@
 import { createSignal, Switch, Match, onMount, createEffect } from "solid-js";
-import { useNavigate } from "@solidjs/router";
 import Line from "../components/Line";
-import AddressCard from "../components/AddressCard";
-import Modal from "../components/Modal";
-import Dropdown2 from "../components/Dropdown2.jsx";
 import AddressModal from "../components/AddressModal.jsx";
-// import districtSignal from "../stores/districtSignal.js";
-import { bumpUserVersion } from "../stores/userVersion.js";
-import { addressVersion, bumpAddressVersion } from "../stores/addressVersion";
-import {
-  isCreatingAddress,
-  flipIsCreatingAddress,
-} from "../stores/creatingAddress";
 import { jwtDecode } from "jwt-decode";
-import { districts } from "../data/districts";
-import { subdistricts } from "../data/subdistricts";
 import profileSignal from "../stores/profileSignal";
 
 function ProfilePage() {
-  const navigate = useNavigate();
   const [userProfile, setUserProfile] = profileSignal;
   const [username, setUsername] = createSignal("");
   const [userPhone, setUserPhone] = createSignal("");
 
   const [activeEditProfile, setActiveEditProfile] = createSignal(false);
-
-  const [isAddAddress, setIsAddAddress] = createSignal(false);
 
   const [addresses, setAddresses] = createSignal([]);
   const [isModalOpen, setIsModalOpen] = createSignal(false);
@@ -236,12 +220,6 @@ function ProfilePage() {
                 <p> : {userProfile().user_email}</p>
               </Match>
             </Switch>
-
-            {/* <For each={Object.keys(userProfile())} fallback={""}>
-                {(key, _) => (
-                  
-                )}
-              </For> */}
           </div>
           <Line />
           <div class="flex justify-between pb-4">
@@ -249,8 +227,6 @@ function ProfilePage() {
             <button
               class="text-black rounded-2xl px-4 py-1 border-1 border-black hover:bg-gray-100 hover:cursor-pointer"
               onclick={() => {
-                flipIsCreatingAddress();
-                setIsAddAddress(true);
                 openAddModal();
               }}
             >
@@ -286,8 +262,6 @@ function ProfilePage() {
                 <p
                   class="text-sky-400 hover:cursor-pointer font-medium"
                   onclick={() => {
-                    flipIsCreatingAddress();
-                    setIsAddAddress(true);
                     openAddModal();
                   }}
                 >

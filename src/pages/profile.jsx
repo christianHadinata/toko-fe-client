@@ -3,6 +3,7 @@ import Line from "../components/Line";
 import AddressModal from "../components/AddressModal.jsx";
 import { jwtDecode } from "jwt-decode";
 import profileSignal from "../stores/profileSignal";
+import Modal from "../components/Modal";
 
 function ProfilePage() {
   const [userProfile, setUserProfile] = profileSignal;
@@ -15,6 +16,8 @@ function ProfilePage() {
   const [isModalOpen, setIsModalOpen] = createSignal(false);
   const [isEditing, setIsEditing] = createSignal(false);
   const [editingAddressData, setEditingAddressData] = createSignal(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = createSignal(false);
+  const [deletingAddressData, setDeletingAddressData] = createSignal(null);
 
   // Buat data dari user untuk profile
   createEffect(() => {
@@ -135,6 +138,42 @@ function ProfilePage() {
     setIsModalOpen(true);
   };
 
+  const handleDelete = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const addressId = deletingAddressData().address_id;
+
+      const body = {
+        address_id: addressId,
+      };
+
+      const response = await fetch(
+        `http://localhost:5000/api/v1/users/deleteaddress`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        setAddresses(
+          addresses().filter((address) => address.address_id != addressId)
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsDeleteModalOpen(false);
+    }
+  };
+
   return (
     <>
       <div class="flex justify-center">
@@ -245,15 +284,57 @@ function ProfilePage() {
                         {address.district_name}, {address.subdistrict_name}
                       </p>
                     </div>
-                    <button
-                      class="rounded-2xl border-1 px-2 py-1 hover:bg-slate-100"
-                      onClick={() => openEditModal(address)}
-                    >
-                      Edit
-                    </button>
+                    <div>
+                      <button
+                        class="rounded-2xl border-1 px-6 py-1 hover:bg-slate-100 cursor-pointer mr-4"
+                        onClick={() => openEditModal(address)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        class="rounded-2xl border-1 px-4 py-1 hover:bg-slate-100 cursor-pointer"
+                        onclick={() => {
+                          setDeletingAddressData(address);
+                          setIsDeleteModalOpen(true);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 )}
               </For>
+              <Modal
+                open={isDeleteModalOpen()}
+                onClose={() => setIsDeleteModalOpen(false)}
+              >
+                <div class="p-6 text-center">
+                  <h2 class="text-xl lg:text-2xl font-bold mb-4 py-2">
+                    Warning !
+                  </h2>
+                  <p class="mb-4 text-lg lg:text-xl py-2">
+                    Are you sure want to delete the{" "}
+                    <span class="font-bold">
+                      {deletingAddressData().address_label}
+                    </span>{" "}
+                    address?
+                  </p>
+                  <div class="flex justify-center gap-x-12 py-2">
+                    <button
+                      onClick={() => setIsDeleteModalOpen(false)}
+                      class="px-4 py-2 bg-red-400 text-white rounded-lg text-base lg:text-lg cursor-pointer "
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      class="px-4 py-2 bg-sky-400 text-white rounded-lg text-base lg:text-lg cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </Modal>
             </Match>
             <Match when={addresses().length === 0}>
               <div class="flex justify-center">

@@ -1,6 +1,8 @@
 import { createSignal, createEffect, onMount } from "solid-js";
 import Modal from "./Modal.jsx";
 import Dropdown2 from "./Dropdown2.jsx";
+import { districts } from "../data/districts.js";
+import { subdistricts } from "../data/subdistricts.js";
 
 // isOpen, title, onClose, defaultAddressLabel, defaultAddress, defaultDistrict, defaultSubDistrict, onSave
 export default function AddressModal(props) {
@@ -24,9 +26,7 @@ export default function AddressModal(props) {
     setLabel(addr.address_label);
     setAddress(addr.address_name);
 
-    const district = props.districts.find(
-      (d) => d.district_id === addr.district_id
-    );
+    const district = districts.find((d) => d.district_id === addr.district_id);
     if (!district) return;
 
     setSelectedDistrict(district);
@@ -39,7 +39,7 @@ export default function AddressModal(props) {
   }
 
   function initializeNewForm() {
-    const defaultDistrict = props.districts[0];
+    const defaultDistrict = districts[0];
     if (!defaultDistrict) return;
 
     setLabel("");
@@ -52,7 +52,7 @@ export default function AddressModal(props) {
   }
 
   function getSubdistrictsForDistrict(districtId) {
-    return props.subdistricts.filter((s) => s.district_id === districtId);
+    return subdistricts.filter((s) => s.district_id === districtId);
   }
 
   function handleDistrictChange(district) {
@@ -114,7 +114,7 @@ export default function AddressModal(props) {
             <div class="flex">
               <span class="mr-2">:</span>
               <Dropdown2
-                items={props.districts}
+                items={districts}
                 value={selectedDistrict()}
                 onChange={(district) => {
                   handleDistrictChange(district);

@@ -306,8 +306,6 @@ function ProfilePage() {
         addressData={editingAddressData()}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
-        districts={districts}
-        subdistricts={subdistricts}
       />
     </>
   );

@@ -151,6 +151,27 @@ function ProfilePage() {
     setIsModalOpen(true);
   };
 
+  // const handleSaveAddress = async ({
+  //   idx,
+  //   addressId,
+  //   addressLabel,
+  //   address,
+  //   selectedSubDistrict,
+  // }) => {
+  //   console.log(idx);
+  //   console.log(addressId);
+  //   const newAddresses = [...addresses()];
+  //   console.log(newAddresses);
+  //   newAddresses[idx] = {
+  //     addressId,
+  //     addressLabel,
+  //     address,
+  //     selectedSubDistrict,
+  //   };
+  //   setAddresses(newAddresses);
+  //   console.log(addresses());
+  // };
+
   return (
     <>
       <div class="flex justify-center">
@@ -244,7 +265,7 @@ function ProfilePage() {
               </For> */}
           </div>
           <Line />
-          <div class="flex justify-between pb-4">
+          <div class="flex justify-between">
             <h1 class="font-bold text-xl">Addresses</h1>
             <button
               class="text-black rounded-2xl px-4 py-1 border-1 border-black hover:bg-gray-100 hover:cursor-pointer"
@@ -257,49 +278,25 @@ function ProfilePage() {
               + Add address
             </button>
           </div>
-          <Switch>
-            <Match when={addresses().length > 0}>
-              <For each={addresses()}>
-                {(address) => (
-                  <div class="flex justify-between items-center p-4 border-2 border-black rounded-xl mb-4">
-                    <div>
-                      <h2 class="font-bold">{address.address_label}</h2>
-                      <p>{address.address_name}</p>
-                      <p class="font-semibold">
-                        {address.district_name}, {address.subdistrict_name}
-                      </p>
-                    </div>
-                    <button
-                      class="rounded-2xl border-1 px-2 py-1 hover:bg-slate-100"
-                      onClick={() => openEditModal(address)}
-                    >
-                      Edit
-                    </button>
-                  </div>
-                )}
-              </For>
-            </Match>
-            <Match when={addresses().length === 0}>
-              <div class="flex justify-center">
-                <p class="text-gray-400"> You dont have any address set up! </p>
-                <p>&nbsp</p>
-                <p
-                  class="text-sky-400 hover:cursor-pointer font-medium"
-                  onclick={() => {
-                    flipIsCreatingAddress();
-                    setIsAddAddress(true);
-                    openAddModal();
-                  }}
-                >
-                  {" "}
-                  Lets add one
+          {addresses().map((address) => (
+            <div class="flex justify-between items-center p-4 border-2 border-black rounded-xl mb-4">
+              <div>
+                <h2 class="font-bold">{address.address_label}</h2>
+                <p>{address.address_name}</p>
+                <p class="font-semibold">
+                  {address.district_name}, {address.subdistrict_name}
                 </p>
               </div>
-            </Match>
-          </Switch>
+              <button
+                class="rounded-2xl border-1 px-2 py-1 hover:bg-slate-100"
+                onClick={() => openEditModal(address)}
+              >
+                Edit
+              </button>
+            </div>
+          ))}
         </div>
       </div>
-
       <AddressModal
         isOpen={isModalOpen()}
         isEdit={isEditing()}

@@ -58,7 +58,8 @@ export default function Search() {
       product_name: "Wireless Earbuds",
       product_price: 799000,
       product_stock: 20,
-      product_details: "Noise-cancelling wireless earbuds with long battery life.",
+      product_details:
+        "Noise-cancelling wireless earbuds with long battery life.",
       product_featured_image_url: "/images/earbuds.jpg",
       category_id: 4,
       category_name: "Electronics",
@@ -231,10 +232,14 @@ export default function Search() {
   setProducts(Array(45).fill(products()).flat());
 
   createEffect(() => {
-    let result = products().filter((product) => product.product_name.toLowerCase().includes(keyword()));
+    let result = products().filter((product) =>
+      product.product_name.toLowerCase().includes(keyword())
+    );
     console.log(result);
     if (!categoryFilter) {
-      result = result.filter((product) => product.category_name.toLowerCase() === categoryFilter());
+      result = result.filter(
+        (product) => product.category_name.toLowerCase() === categoryFilter()
+      );
     }
 
     setTotalPages(Math.ceil(result.length / cardPerPage));
@@ -278,18 +283,25 @@ export default function Search() {
             // height={400}
             class="lg:max-w-lg lg:max-h-lg max-w-sm max-h-sm"
           />
-          <p class="font-medium lg:text-2xl text-xl">No Result for Keyword = "{keyword}"</p>
-          <p class="lg:text-lg text-base text-gray-500 py-5">Try to search with another keyword!</p>
+          <p class="font-medium lg:text-2xl text-xl">
+            No Result for Keyword = "{keyword}"
+          </p>
+          <p class="lg:text-lg text-base text-gray-500 py-5">
+            Try to search with another keyword!
+          </p>
         </div>
       </Show>
       <Show when={filteredProducts().length > 0}>
         {" "}
         <div className="flex w-full  flex-col py-10">
           <h2 className="text-xl font-medium capitalize">
-            Result for keyword <span className="font-semibold text-sky-400">"{keyword}"</span>
+            Result for keyword{" "}
+            <span className="font-semibold text-sky-400">"{keyword}"</span>
             <Show when={categoryFilter() !== ""}>
               <span> in </span>
-              <span className="font-semibold text-sky-400">"{categoryFilter()}"</span>
+              <span className="font-semibold text-sky-400">
+                "{categoryFilter()}"
+              </span>
             </Show>
           </h2>
           <div className="mt-5 product-container">
@@ -298,7 +310,9 @@ export default function Search() {
                 <ProductCard
                   key={product.product_id}
                   {...product}
-                  formatted_product_price={formatCurrency(product.product_price)}
+                  formatted_product_price={formatCurrency(
+                    product.product_price
+                  )}
                 />
               )}
             </For>
@@ -344,12 +358,6 @@ export default function Search() {
       </div> */}
       <Pagination
         totalPages={totalPages()}
-        currentPage={currentPage()}
-        pageHandler={pageHandler}
-      />
-
-      <Pagination
-        totalPages={30}
         currentPage={currentPage()}
         pageHandler={pageHandler}
       />

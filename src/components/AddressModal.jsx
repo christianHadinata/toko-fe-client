@@ -1,51 +1,87 @@
 import { createSignal, createEffect, onMount } from "solid-js";
 import Modal from "./Modal.jsx";
 import Dropdown2 from "./Dropdown2.jsx";
-import districtSignal from "../stores/districtSignal.js";
-import { flipIsCreatingAddress } from "../stores/creatingAddress.js";
 import { districts } from "../data/districts.js";
 import { subdistricts } from "../data/subdistricts.js";
 
-// isOpen, title, onClose, defaultAddressLabel, defaultAddress, defaultDistrict, defaultSubDistrict, onSave
 export default function AddressModal(props) {
-  const [addressLabel, setAddressLabel] = createSignal(props.defaultAddressLabel || "");
-  const [address, setAddress] = createSignal(props.defaultAddress || "");
-  const [_, setDistrictId] = districtSignal;
-
-  const [selectedDistrict, setSelectedDistrict] = createSignal(props.defaultDistrict);
-  const [selectedSubDistrict, setSelectedSubDistrict] = createSignal(props.defaultSubDistrict);
-
-  const [filteredSubDistrict, setFilteredSubDistrict] = createSignal();
+  const [label, setLabel] = createSignal("");
+  const [address, setAddress] = createSignal("");
+  const [selectedDistrict, setSelectedDistrict] = createSignal(null);
+  const [selectedSubDistrict, setSelectedSubDistrict] = createSignal(null);
+  const [filteredSubDistricts, setFilteredSubDistricts] = createSignal([]);
 
   createEffect(() => {
-    setFilteredSubDistrict(subdistricts.filter((currSubDistricts) => currSubDistricts.district_id === selectedDistrict().district_id));
-    setSelectedSubDistrict(filteredSubDistrict()[0]);
+    if (!props.isOpen) return;
+
+    if (props.isEdit && props.addressData) {
+      initializeEditForm(props.addressData);
+    } else {
+      initializeNewForm();
+    }
   });
 
-  const handleRefreshSelected = () => {
-    setSelectedDistrict(props.defaultDistrict);
-    setSelectedSubDistrict(props.defaultSubDistrict);
+  function initializeEditForm(addr) {
+    setLabel(addr.address_label);
+    setAddress(addr.address_name);
+
+    const district = districts.find((d) => d.district_id === addr.district_id);
+    if (!district) return;
+
+    setSelectedDistrict(district);
+
+    const subs = getSubdistrictsForDistrict(district.district_id);
+    setFilteredSubDistricts(subs);
+
+    const sub = subs.find((s) => s.subdistrict_id === addr.subdistrict_id);
+    setSelectedSubDistrict(sub ?? subs[0]);
+  }
+
+  function initializeNewForm() {
+    const defaultDistrict = districts[0];
+    if (!defaultDistrict) return;
+
+    setLabel("");
+    setAddress("");
+    setSelectedDistrict(defaultDistrict);
+
+    const subs = getSubdistrictsForDistrict(defaultDistrict.district_id);
+    setFilteredSubDistricts(subs);
+    setSelectedSubDistrict(subs[0]);
+  }
+
+  function getSubdistrictsForDistrict(districtId) {
+    return subdistricts.filter((s) => s.district_id === districtId);
+  }
+
+  function handleDistrictChange(district) {
+    setSelectedDistrict(district);
+    const subs = getSubdistrictsForDistrict(district.district_id);
+    setFilteredSubDistricts(subs);
+    setSelectedSubDistrict(subs[0]);
+  }
+  const onSubmit = () => {
+    const payload = {
+      address_id: props.isEdit ? props.addressData.address_id : undefined,
+      address_label: label(),
+      address_name: address(),
+      subdistrict_id: selectedSubDistrict().subdistrict_id,
+    };
+    props.onSave(payload);
   };
 
   return (
     <>
-      <Modal
-        open={props.isOpen}
-        onClose={() => {
-          setSelectedDistrict(props.defaultDistrict);
-          setSelectedSubDistrict(props.defaultSubDistrict);
-          props.onClose();
-        }}
-      >
+      <Modal open={props.isOpen} onClose={props.onClose}>
         <div class="p-6">
           <div class="flex justify-between">
-            <h2 class="font-bold text-xl">{props.title}</h2>
+            <h2 class="font-bold text-xl">
+              {" "}
+              {props.isEdit ? "Edit Address" : "Add Address"}
+            </h2>
             <button
               class="font-semibold text-3xl hover:font-bold hover:cursor-pointer"
-              onClick={() => {
-                flipIsCreatingAddress();
-                props.onClose();
-              }}
+              onClick={props.onClose}
             >
               X
             </button>
@@ -57,10 +93,8 @@ export default function AddressModal(props) {
               <input
                 type="text"
                 class="rounded-2xl border-black border-1 px-2"
-                value={props.defaultAddressLabel || ""}
-                onchange={(e) => {
-                  setAddressLabel(e.target.value);
-                }}
+                value={label()}
+                onInput={(e) => setLabel(e.target.value)}
               />
             </div>
 
@@ -70,10 +104,8 @@ export default function AddressModal(props) {
               <input
                 type="text"
                 class="rounded-2xl border-black border-1 px-2"
-                value={props.defaultAddress || ""}
-                onchange={(e) => {
-                  setAddress(e.target.value);
-                }}
+                value={address()}
+                onInput={(e) => setAddress(e.target.value)}
               />
             </div>
 
@@ -83,10 +115,8 @@ export default function AddressModal(props) {
               <Dropdown2
                 items={districts}
                 value={selectedDistrict()}
-                // defaultValue={props.defaultDistrict}
-                onChange={(selectedValue) => {
-                  setSelectedDistrict(selectedValue);
-                  setDistrictId(selectedValue);
+                onChange={(district) => {
+                  handleDistrictChange(district);
                 }}
               />
             </div>
@@ -95,24 +125,16 @@ export default function AddressModal(props) {
             <div class="flex items-center">
               <span class="mr-2">:</span>
               <Dropdown2
-                items={filteredSubDistrict()}
+                items={filteredSubDistricts()}
                 value={selectedSubDistrict()}
-                onChange={(val) => {
-                  console.log(val);
-                  setSelectedSubDistrict(val);
-                }}
+                onChange={setSelectedSubDistrict}
               />
             </div>
           </div>
           <div class="flex justify-end mt-4">
             <button
               class="rounded-2xl border-1 px-3 py-1 hover:cursor-pointer hover:bg-slate-100"
-              onClick={() => {
-                flipIsCreatingAddress();
-                console.log(addressLabel(), address(), selectedDistrict(), selectedSubDistrict());
-
-                props.onSave(addressLabel(), address(), selectedDistrict(), selectedSubDistrict(), handleRefreshSelected);
-              }}
+              onClick={onSubmit}
             >
               Save
             </button>

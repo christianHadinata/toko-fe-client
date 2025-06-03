@@ -7,7 +7,6 @@ import { setToastSignal } from "../stores/toaster";
 import { Toaster } from "solid-toast";
 import Modal from "../components/Modal";
 
-
 function ProfilePage() {
   const [userProfile, setUserProfile] = profileSignal;
   const [username, setUsername] = createSignal("");
@@ -48,7 +47,6 @@ function ProfilePage() {
         }
       );
 
-
       const data = await response.json();
       console.log(data);
 
@@ -83,19 +81,19 @@ function ProfilePage() {
       );
 
       let data = await response.json();
-      
+
       if (data.success) {
         data = {
           ...data,
-          message : "Profile Changed Succesfully"
-        }
+          message: "Profile Changed Succesfully",
+        };
         setUserProfile((prev) => ({
           ...prev,
           user_name: username(),
           user_phone: userPhone(),
         }));
       }
-      setToastSignal(data)
+      setToastSignal(data);
     } catch (error) {
       console.log(error);
     }
@@ -131,22 +129,20 @@ function ProfilePage() {
 
     let result = await res.json();
     if (result.success) {
-      if (isEditing()){
+      if (isEditing()) {
         result = {
           ...result,
-          message : `Address ${address_label} has been edited`
-        }
-      }else {
+          message: `Address ${address_label} has been edited`,
+        };
+      } else {
         result = {
           ...result,
-          message : `New Address : ${address_label} has been added`
-        }
-
+          message: `New Address : ${address_label} has been added`,
+        };
       }
-
     }
 
-    setToastSignal(result)
+    setToastSignal(result);
 
     await fetchAddresses();
     setIsModalOpen(false);
@@ -191,15 +187,17 @@ function ProfilePage() {
       if (data.success) {
         data = {
           ...data,
-          message : `Succesfully Delete Address : ${deletingAddressData().address_label} `
-        }
-      
+          message: `Succesfully Delete Address : ${
+            deletingAddressData().address_label
+          } `,
+        };
+
         setAddresses(
           addresses().filter((address) => address.address_id != addressId)
         );
       }
 
-      setToastSignal(data)
+      setToastSignal(data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -209,13 +207,10 @@ function ProfilePage() {
 
   return (
     <>
-      <div class="flex justify-center">
+      <div class="flex justify-center px-8 md:px-0">
         <div class=" w-full md:w-3/5">
-        <Toaster
-        position="top-center"
-        gutter={24}
-        />
-          <div class="flex justify-between">
+          <Toaster position="top-center" gutter={24} />
+          <div class="flex justify-between py-2">
             <h1 class="font-bold text-xl">Profile</h1>
 
             <Switch>
@@ -321,7 +316,7 @@ function ProfilePage() {
                         {address.district_name}, {address.subdistrict_name}
                       </p>
                     </div>
-                    <div>
+                    <div class="flex flex-col gap-y-2 md:block">
                       <button
                         class="rounded-2xl border-1 px-6 py-1 hover:bg-slate-100 cursor-pointer mr-4"
                         onClick={() => openEditModal(address)}

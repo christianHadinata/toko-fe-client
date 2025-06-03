@@ -186,13 +186,20 @@ function ProfilePage() {
         }
       );
 
-      const data = await response.json();
+      let data = await response.json();
 
       if (data.success) {
+        data = {
+          ...data,
+          message : `Succesfully Delete Address : ${deletingAddressData().address_label} `
+        }
+      
         setAddresses(
           addresses().filter((address) => address.address_id != addressId)
         );
       }
+
+      setToastSignal(data)
     } catch (error) {
       console.log(error);
     } finally {

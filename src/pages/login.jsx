@@ -1,9 +1,14 @@
 import { createEffect, createSignal } from "solid-js";
 import { A, useNavigate } from "@solidjs/router";
+import toast, { Toaster} from "solid-toast";
+import { toastSignal, setToastSignal } from "../stores/toaster";
 
 
 function Login() {
   const navigate = useNavigate();
+  // const [ message, setMessage ] = createSignal("")
+
+
   const [isVisible, setIsVisible] = createSignal(false);
   const toggleVisibility = () => setIsVisible(!isVisible());
 
@@ -32,31 +37,38 @@ function Login() {
         })
       });
       
-      const data = await response.json();
+      let data = await response.json();
+      console.log(data)
+      
       
       if (data.success) {
         localStorage.setItem("token", data.token);
-
-        // const decoded = jwtDecode(data.token);
-        // setUserId(decoded.user_id)
-
-
+        data = {
+          ...data,
+          message : "Login Successful",
+        }
+        
         navigate('/');
-      } else {
-        alert("gagal")
-      }
+      } 
+      
+      setToastSignal(data)
 
-   
+      
     } catch (error) {
-        console.log(error)
+
     }
 
     // location.reload();
   };
 
+
   return (
     <>
       <div class="flex">
+        <Toaster
+        position="top-center"
+        gutter={24}
+        />
         <div class="flex h-screen w-1/2 flex-col items-center justify-center">
           <div class="w-1/2">
             <A
@@ -77,7 +89,7 @@ function Login() {
                   placeholder="Enter your email"
                 />
                 <label class="mb-1 text-gray-700 font-medium"> Password</label>
-                <div class="relative w-full max-w-md">
+                <div class="relative w-full ">
                   <input
                     type={isVisible() ? "text" : "password"}
                     value={password()}

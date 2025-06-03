@@ -3,7 +3,10 @@ import Line from "../components/Line";
 import AddressModal from "../components/AddressModal.jsx";
 import { jwtDecode } from "jwt-decode";
 import profileSignal from "../stores/profileSignal";
+import { setToastSignal } from "../stores/toaster";
+import { Toaster } from "solid-toast";
 import Modal from "../components/Modal";
+
 
 function ProfilePage() {
   const [userProfile, setUserProfile] = profileSignal;
@@ -33,7 +36,7 @@ function ProfilePage() {
       // const id = signalId()
       const token = localStorage.getItem("token");
       const id = jwtDecode(token).user_id;
-      console.log(" awal fetch");
+
       const response = await fetch(
         `http://localhost:5000/api/v1/users/addresses`,
         {
@@ -44,7 +47,7 @@ function ProfilePage() {
           },
         }
       );
-      console.log(" selesai fetch");
+
 
       const data = await response.json();
       console.log(data);
@@ -79,15 +82,20 @@ function ProfilePage() {
         }
       );
 
-      const data = await response.json();
-
+      let data = await response.json();
+      
       if (data.success) {
+        data = {
+          ...data,
+          message : "Profile Changed Succesfully"
+        }
         setUserProfile((prev) => ({
           ...prev,
           user_name: username(),
           user_phone: userPhone(),
         }));
       }
+      setToastSignal(data)
     } catch (error) {
       console.log(error);
     }
@@ -121,7 +129,25 @@ function ProfilePage() {
       body: JSON.stringify(payload),
     });
 
-    const result = await res.json();
+    let result = await res.json();
+    if (result.success) {
+      if (isEditing()){
+        result = {
+          ...result,
+          message : `Address ${address_label} has been edited`
+        }
+      }else {
+        result = {
+          ...result,
+          message : `New Address : ${address_label} has been added`
+        }
+
+      }
+
+    }
+
+    setToastSignal(result)
+
     await fetchAddresses();
     setIsModalOpen(false);
   };
@@ -178,6 +204,10 @@ function ProfilePage() {
     <>
       <div class="flex justify-center">
         <div class=" w-full md:w-3/5">
+        <Toaster
+        position="top-center"
+        gutter={24}
+        />
           <div class="flex justify-between">
             <h1 class="font-bold text-xl">Profile</h1>
 

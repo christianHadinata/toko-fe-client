@@ -1,5 +1,8 @@
 import { Router, Route } from "@solidjs/router";
 
+import { toast, Toaster } from "solid-toast";
+import { toastSignal } from "./stores/toaster";
+import { createEffect } from "solid-js";
 import Login from "./pages/login";
 import page404 from "./pages/404";
 import Register from "./pages/register";
@@ -11,16 +14,42 @@ import Cart from "./pages/cart";
 import ProfilePage from "./pages/profile";
 import Navbar from "./components/Navbar";
 
+
+
 function App() {
+  const toastOpts = {
+
+  }
+  createEffect(()=>{
+    const res = toastSignal();
+  
+    
+    if ( res && 'success' in res) {
+      if (res.success) {
+        toast.success(res.message || "Default Message : Success" ,{
+          unmountDelay: 1000,
+      });
+      }else {
+        toast.error(res.message || "Default Message : Failed",{
+          unmountDelay: 1000,
+        });
+  
+      }
+    }
+  }); 
+  
   const MainLayout = (props) => {
     return (
       <>
         <div class="w-full flex justify-center p-4">
-          <div class="w-full max-w-7xl">{props.children}</div>
+          <div class="w-full max-w-7xl">
+            {props.children}</div>
         </div>
       </>
     );
   };
+
+
   return (
     <>
       <Router>

@@ -1,5 +1,7 @@
 import { A, useNavigate } from "@solidjs/router";
-import { createEffect, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
+import { setToastSignal } from "../stores/toaster";
+import { Toaster } from "solid-toast";
 
 function Register() {
   const [isVisible, setIsVisible] = createSignal(false);
@@ -38,14 +40,17 @@ function Register() {
         })
       });
       
-      const data = await response.json();
+      let data = await response.json();
       
       if (data.success) {
+        data = {
+          ...data,
+          message : "User Succesfully Registered"
+        }
         navigate('/login');
-      } else {
-        alert("gagal")
-      }
-      
+      } 
+
+      setToastSignal(data)
     } catch (error) {
       console.log(error);
     }
@@ -57,6 +62,10 @@ function Register() {
     <>
       <div class="flex">
         <div class="flex h-screen w-1/2 items-center justify-center rounded-br-full bg-sky-400">
+        <Toaster
+        position="top-center"
+        gutter={24}
+        />
           <div class="mb-32 ml-32 flex items-center justify-center">
             <img
               src={"/assets/logo/white.png"}

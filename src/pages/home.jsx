@@ -3,6 +3,7 @@ import CategoryCard from "../components/CategoryCard";
 import ProductCard from "../components/ProductCard";
 import SearchBar from "../components/SearchBar";
 import { formatCurrency } from "../utils/formatCurrency";
+import { Toaster } from "solid-toast";
 export default function Home() {
   // const [categories, setCategories] = createSignal([]);
   // const [products, setProducts] = createSignal([]);
@@ -250,12 +251,16 @@ export default function Home() {
           src={`/assets/Image/dummyCarousel.jpg`}
           alt=""
           class="w-full rounded-xl"
-        />
+          />
       </div>
       {/* Search Bar */}
       <SearchBar />
       {/* Categories */}
       <div class="flex w-full flex-col mt-8">
+          <Toaster
+          position="top-center"
+          gutter={24}
+          />
         <h2 class="text-3xl font-semibold capitalize">
           Shop our top categories
         </h2>

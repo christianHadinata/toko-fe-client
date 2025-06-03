@@ -121,7 +121,7 @@ function ProductDetails({ params }) {
                 : "/assets/icon/broken.png"
             }
             alt=""
-            class="w-full rounded-xl "
+            class="w-full max-w-md md:max-h-2/3 max-h-screen object-contain mx-auto rounded-xl"
           />
 
           <div class="mt-5 grid grid-cols-4 gap-x-4">
@@ -136,10 +136,11 @@ function ProductDetails({ params }) {
                     image.product_name ||
                     `Active image placeholder ${index() + 1}`
                   }
-                  class={`cursor-pointer rounded-xl aspect-square object-cover ${activeImage() === `${image.product_featured_image_url}`
-                    ? "border-4 border-sky-400"
-                    : "border-none"
-                    }`}
+                  class={`cursor-pointer rounded-xl aspect-square object-cover ${
+                    activeImage() === `${image.product_featured_image_url}`
+                      ? "border-4 border-sky-400"
+                      : "border-none"
+                  }`}
                   onClick={() => setActiveImage(image)}
                 />
               )}
@@ -147,7 +148,7 @@ function ProductDetails({ params }) {
           </div>
         </div>
 
-        <div class="flex flex-col">
+        <div class="flex flex-col text-center md:text-start">
           <h2 class="text-3xl font-semibold">
             {" "}
             {additional_products[0].product_name}{" "}
@@ -157,7 +158,7 @@ function ProductDetails({ params }) {
           <h1 class="mt-5 text-4xl font-bold text-sky-400">
             {"Rp. "} {additional_products[0].product_price}
           </h1>
-          <div class="mt-10 flex items-center gap-x-4">
+          <div class="mt-10 flex flex-col md:flex-row items-center justify-center md:justify-start gap-x-4">
             <span class="select-none">
               <div class="flex w-52 items-center justify-center rounded-full border-1 border-gray-200 py-2 shadow-md shadow-gray-200">
                 <span
@@ -165,10 +166,11 @@ function ProductDetails({ params }) {
                   class="cursor-not-allowed"
                 >
                   <button
-                    class={`select-none rounded-md px-4 py-2 text-2xl ${currentQt() === 1
-                      ? "cursor-not-allowed text-gray-500"
-                      : "cursor-pointer text-black hover:bg-gray-100 hover:text-sky-400"
-                      }`}
+                    class={`select-none rounded-md px-4 py-2 text-2xl ${
+                      currentQt() === 1
+                        ? "cursor-not-allowed text-gray-500"
+                        : "cursor-pointer text-black hover:bg-gray-100 hover:text-sky-400"
+                    }`}
                     onClick={() => {
                       if (currentQt() > 1) {
                         setCurrentQt(currentQt() - 1);
@@ -197,10 +199,11 @@ function ProductDetails({ params }) {
                 />
                 <span class="">
                   <button
-                    class={`select-none rounded-md px-4 py-2 text-2xl ${currentQt() === maxQt
-                      ? "cursor-not-allowed text-gray-500"
-                      : "cursor-pointer text-black hover:bg-gray-100 hover:text-sky-400"
-                      }`}
+                    class={`select-none rounded-md px-4 py-2 text-2xl ${
+                      currentQt() === maxQt
+                        ? "cursor-not-allowed text-gray-500"
+                        : "cursor-pointer text-black hover:bg-gray-100 hover:text-sky-400"
+                    }`}
                     onClick={() => {
                       if (currentQt() < maxQt) {
                         setCurrentQt(currentQt() + 1);
@@ -212,14 +215,14 @@ function ProductDetails({ params }) {
                 </span>
               </div>
             </span>
-            <div>
+            <div class="mt-10 md:mt-0">
               Total Stock :{" "}
               <span class="font-semibold capitalize">
                 {additional_products[0].product_quantity}
               </span>
             </div>
           </div>
-          <div class="mt-10 flex gap-x-4">
+          <div class="mt-10 flex gap-x-4 justify-center md:justify-start">
             <button
               onClick={() => setOpen(true)}
               class="w-52 bg-sky-400 py-6 text-lg font-medium capitalize text-white rounded-lg hover:cursor-pointer hover:scale-105 transition-all"
@@ -227,7 +230,7 @@ function ProductDetails({ params }) {
               + Add to cart
             </button>
             <Modal open={open()} onClose={() => setOpen(false)}>
-              <div class="p-6">
+              <div class="p-6 text-center">
                 <h2 class="text-xl lg:text-2xl font-bold mb-4 py-2">
                   Success!
                 </h2>

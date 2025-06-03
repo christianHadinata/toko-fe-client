@@ -99,7 +99,7 @@ function Login() {
                   <button
                     type="button"
                     aria-label="Toggle password visibility"
-                    class="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-600"
+                    class="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
                     onClick={toggleVisibility}
                   >
                     <img

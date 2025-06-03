@@ -22,11 +22,11 @@ export default function Navbar(props) {
   return (
     <>
       <nav class="fixed z-50 w-full border-b-2 border-gray-200 bg-white p-4 shadow-sm">
-        <div class="flex items-center justify-between px-8">
+        <div class="flex items-center justify-between px-2 sm:px-8">
           <A href={"/"} class="cursor-pointer text-3xl text-sky-400">
             Tokofe
           </A>
-          <div class="flex items-center gap-x-6">
+          <div class="flex items-center gap-x-4 md:gap-x-6 ml-4 sm:ml-0">
             <div class="group relative flex gap-2 items-center">
               <h3 class="cursor-pointer">Category</h3>
               <img

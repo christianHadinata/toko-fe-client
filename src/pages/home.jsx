@@ -5,9 +5,10 @@ import SearchBar from "../components/SearchBar";
 import { formatCurrency } from "../utils/formatCurrency";
 import { Toaster } from "solid-toast";
 import { categories } from "../data/categories";
-import { productStore, setProductStore } from "../stores/productStore";
 
 export default function Home() {
+  const [products, setProducts] = createSignal([]);
+
   onMount(() => {
     fetchProducts();
   });
@@ -16,7 +17,8 @@ export default function Home() {
     try {
       const res = await fetch(`http://localhost:5000/api/v1/products`);
       const data = await res.json();
-      setProductStore("products", data);
+      console.log(data);
+      setProducts(data);
     } catch (error) {
       console.error(error);
     }
@@ -274,7 +276,7 @@ export default function Home() {
       <div class="flex w-full flex-col py-7">
         <h2 class="text-3xl font-semibold capitalize">Featured Products</h2>
         <div class="mt-5 product-container">
-          <For each={productStore.products}>
+          <For each={products()}>
             {(product) => (
               <ProductCard
                 {...product}

@@ -7,7 +7,9 @@ export default function SearchBarCategory(props) {
   const [params, setSearchParams] = useSearchParams();
 
   // MAGIC OVER HERE, DO NOT TOUCH !!!!!! YTTA
-  const [selectedCategory, setSelectedCategory] = createSignal(props.category_name);
+  const [selectedCategory, setSelectedCategory] = createSignal(
+    props.category_name
+  );
   const [search, setSearch] = createSignal(params.search || "");
 
   // let filterRef;
@@ -18,9 +20,15 @@ export default function SearchBarCategory(props) {
     if (selectedCategory() === "all") {
       navigate(`/search?q=${search()}`);
     } else {
-      setSearchParams({
-        search: search(),
-      });
+      navigate(
+        `/category/${props.category_name}?search=${encodeURIComponent(
+          search()
+        )}`
+      );
+      // this wont delete params "page", so we use navigate instead, to make sure just params "search" used
+      // setSearchParams({
+      //   search: search(),
+      // });
     }
 
     // const filter = filterRef.value;
@@ -38,10 +46,7 @@ export default function SearchBarCategory(props) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      class="flex w-full"
-    >
+    <form onSubmit={handleSubmit} class="flex w-full">
       <div class="w-1/6 px-2 border-2 border-gray-300  rounded-l-xl border-r-0 pr-2">
         <select
           class="w-full h-full"

@@ -3,6 +3,8 @@ import { For } from "solid-js";
 import Modal from "../components/Modal";
 import { useParams, useNavigate } from "@solidjs/router";
 import { formatCurrency } from "../utils/formatCurrency";
+import { Toaster } from "solid-toast";
+import { toastSignal, setToastSignal } from "../stores/toaster";
 
 function ProductDetails() {
   const params = useParams();
@@ -81,6 +83,8 @@ function ProductDetails() {
 
       if (status.success) {
         setOpenModal(true);
+      } else {
+        setToastSignal(status);
       }
     } catch (error) {
       console.log(error);
@@ -90,6 +94,7 @@ function ProductDetails() {
   return (
     <>
       <div class="mt-5 grid md:grid-cols-2 grid-cols-1 gap-12 md:gap-20 lg:gap-32">
+        <Toaster position="top-center" gutter={24} />
         <div class="flex flex-col">
           {/* Image dari product */}
           <img
@@ -215,7 +220,7 @@ function ProductDetails() {
           <div class="mt-10 flex gap-x-4 justify-center md:justify-start">
             <button
               onClick={handleAddToCart}
-              class="w-52 bg-sky-400 py-6 text-lg font-medium capitalize text-white rounded-lg hover:cursor-pointer hover:scale-105 transition-all"
+              class="w-52 bg-sky-400 px-6 py-4 text-base sm:text-lg font-medium capitalize text-white rounded-lg hover:cursor-pointer hover:scale-105 transition-all"
             >
               + Add to cart
             </button>

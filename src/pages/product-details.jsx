@@ -65,6 +65,14 @@ function ProductDetails() {
     try {
       const token = localStorage.getItem("token");
 
+      if (!token) {
+        setToastSignal({
+          success: false,
+          message: "You must login first",
+        });
+        return;
+      }
+
       const body = {
         product_id: product().product_id,
         product_quantity: selectedQuantity(),
